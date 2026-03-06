@@ -1,0 +1,57 @@
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-14 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-15 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-16 09:05:01] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-17 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-18 09:05:01] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-19 09:05:01] 슬로우 쿼리 메일 발송 완료 (Top: 0건, Running: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-20 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-21 09:05:03] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-22 09:05:03] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-23 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-24 09:05:04] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-25 09:05:03] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-26 09:05:05] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-27 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-02-28 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 15건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-01 09:08:56] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-02 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 16건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-03 09:10:56] 슬로우 쿼리 메일 발송 완료 (Top: 16건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-04 09:07:02] 슬로우 쿼리 메일 발송 완료 (Top: 16건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-05 09:06:54] 슬로우 쿼리 메일 발송 완료 (Top: 17건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-06 09:05:04] 슬로우 쿼리 메일 발송 완료 (Top: 12건, Running: 0건) -> kto2004@naver.com
+success

@@ -1,0 +1,98 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "실시간 주식 모니터링 대시보드",
+    "tags": ["stock", "realtime", "redis"],
+    "timezone": "Asia/Seoul",
+    "panels": [
+      {
+        "id": 1,
+        "title": "실시간 주식 가격",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "stats:stock:005930",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "변동률 순위",
+        "type": "barchart",
+        "targets": [
+          {
+            "expr": "ZREVRANGE ranking:change_rate 0 9 WITHSCORES",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "급변동 알림",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "KEYS alert:stock:*",
+            "refId": "C"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      }
+    ],
+    "refresh": "5s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "schemaVersion": 27,
+    "version": 1
+  }
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "code": "005930",
+    "timestamp": "2026-02-23 10:09:17",
+    "name": "삼성전자",
+    "current_price": 195200,
+    "change": 5100,
+    "market_cap_text": "1,155조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t5,133",
+    "display_name": "삼성전자"
+  },
+  {
+    "code": "000660",
+    "timestamp": "2026-02-23 10:09:17",
+    "name": "SK하이닉스",
+    "current_price": 972000,
+    "change": 23000,
+    "market_cap_text": "692조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,467",
+    "display_name": "SK하이닉스"
+  },
+  {
+    "code": "035420",
+    "timestamp": "2026-02-23 10:09:18",
+    "name": "NAVER",
+    "current_price": 259000,
+    "change": 4500,
+    "market_cap_text": "40조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,248",
+    "display_name": "NAVER"
+  },
+  {
+    "code": "035720",
+    "timestamp": "2026-02-23 10:09:19",
+    "name": "카카오",
+    "current_price": 58300,
+    "change": 400,
+    "market_cap_text": "25조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t8,039",
+    "display_name": "카카오"
+  },
+  {
+    "code": "373220",
+    "timestamp": "2026-02-23 10:09:20",
+    "name": "LG에너지솔루션",
+    "current_price": 398000,
+    "change": 3500,
+    "market_cap_text": "93조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,320",
+    "display_name": "LG에너지솔루션"
+  },
+  {
+    "code": "207940",
+    "timestamp": "2026-02-23 10:09:21",
+    "name": "삼성바이오로직스",
+    "current_price": 1744000,
+    "change": 8000,
+    "market_cap_text": "80조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,314",
+    "display_name": "삼성바이오로직스"
+  },
+  {
+    "code": "005490",
+    "timestamp": "2026-02-23 10:09:21",
+    "name": "POSCO홀딩스",
+    "current_price": 392500,
+    "change": 1500,
+    "market_cap_text": "31조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,662",
+    "display_name": "POSCO홀딩스"
+  },
+  {
+    "code": "005380",
+    "timestamp": "2026-02-23 10:09:22",
+    "name": "현대차",
+    "current_price": 530500,
+    "change": 21500,
+    "market_cap_text": "108조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,240",
+    "display_name": "현대차"
+  },
+  {
+    "code": "105560",
+    "timestamp": "2026-02-23 10:09:23",
+    "name": "KB금융",
+    "current_price": 166700,
+    "change": 2100,
+    "market_cap_text": "62조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,542",
+    "display_name": "KB금융"
+  },
+  {
+    "code": "051910",
+    "timestamp": "2026-02-23 10:09:24",
+    "name": "LG화학",
+    "current_price": 334500,
+    "change": 2500,
+    "market_cap_text": "23조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,131",
+    "display_name": "LG화학"
+  },
+  {
+    "code": "000270",
+    "timestamp": "2026-02-23 10:09:25",
+    "name": "기아",
+    "current_price": 174500,
+    "change": 2700,
+    "market_cap_text": "68조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,271",
+    "display_name": "기아"
+  },
+  {
+    "code": "066570",
+    "timestamp": "2026-02-23 10:09:26",
+    "name": "LG전자",
+    "current_price": 137100,
+    "change": 13500,
+    "market_cap_text": "22조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t3,317",
+    "display_name": "LG전자"
+  }
+]

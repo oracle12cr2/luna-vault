@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-02-23T10:10:58.643465",
+  "total_stocks": 8,
+  "summary": {
+    "up": 5,
+    "down": 3,
+    "flat": 0
+  },
+  "stocks": [
+    {
+      "code": "035420",
+      "timestamp": "2026-02-23 10:10:52",
+      "name": "NAVER",
+      "current_price": 259000,
+      "change": 4500,
+      "change_rate": 1.77,
+      "market_cap_text": "40조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,248",
+      "display_name": "NAVER"
+    },
+    {
+      "code": "035720",
+      "timestamp": "2026-02-23 10:10:53",
+      "name": "카카오",
+      "current_price": 58200,
+      "change": 300,
+      "change_rate": 0.52,
+      "market_cap_text": "25조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,596",
+      "display_name": "카카오"
+    },
+    {
+      "code": "323410",
+      "timestamp": "2026-02-23 10:10:54",
+      "name": "카카오뱅크",
+      "current_price": 28750,
+      "change": 50,
+      "change_rate": 0.17,
+      "market_cap_text": "13조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,141",
+      "display_name": "카카오뱅크"
+    },
+    {
+      "code": "036570",
+      "timestamp": "2026-02-23 10:10:54",
+      "name": "엔씨소프트",
+      "current_price": 229500,
+      "change": 2500,
+      "change_rate": -1.08,
+      "market_cap_text": "4조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t9,444",
+      "display_name": "NCSoft"
+    },
+    {
+      "code": "017670",
+      "timestamp": "2026-02-23 10:10:55",
+      "name": "SK텔레콤",
+      "current_price": 79500,
+      "change": 1300,
+      "change_rate": -1.61,
+      "market_cap_text": "17조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t758",
+      "display_name": "SK텔레콤"
+    },
+    {
+      "code": "030200",
+      "timestamp": "2026-02-23 10:10:56",
+      "name": "KT",
+      "current_price": 67900,
+      "change": 1000,
+      "change_rate": -1.45,
+      "market_cap_text": "17조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,123",
+      "display_name": "KT"
+    },
+    {
+      "code": "066570",
+      "timestamp": "2026-02-23 10:10:57",
+      "name": "LG전자",
+      "current_price": 137000,
+      "change": 13400,
+      "change_rate": 10.84,
+      "market_cap_text": "22조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t3,154",
+      "display_name": "LG전자"
+    },
+    {
+      "code": "018260",
+      "timestamp": "2026-02-23 10:10:58",
+      "name": "삼성에스디에스",
+      "current_price": 174900,
+      "change": 2600,
+      "change_rate": 1.51,
+      "market_cap_text": "13조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t5,334",
+      "display_name": "삼성SDS"
+    }
+  ]
+}

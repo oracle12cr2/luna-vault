@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-02-23T10:11:12.688154",
+  "total_stocks": 10,
+  "summary": {
+    "up": 6,
+    "down": 4,
+    "flat": 0
+  },
+  "stocks": [
+    {
+      "code": "005930",
+      "timestamp": "2026-02-23 10:11:04",
+      "name": "삼성전자",
+      "current_price": 195300,
+      "change": 5200,
+      "change_rate": 2.66,
+      "market_cap_text": "1,156조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,053",
+      "display_name": "삼성전자"
+    },
+    {
+      "code": "000660",
+      "timestamp": "2026-02-23 10:11:05",
+      "name": "SK하이닉스",
+      "current_price": 973000,
+      "change": 24000,
+      "change_rate": 2.63,
+      "market_cap_text": "693조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t4,594",
+      "display_name": "SK하이닉스"
+    },
+    {
+      "code": "035420",
+      "timestamp": "2026-02-23 10:11:06",
+      "name": "NAVER",
+      "current_price": 259000,
+      "change": 4500,
+      "change_rate": 1.77,
+      "market_cap_text": "40조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,248",
+      "display_name": "NAVER"
+    },
+    {
+      "code": "035720",
+      "timestamp": "2026-02-23 10:11:06",
+      "name": "카카오",
+      "current_price": 58200,
+      "change": 300,
+      "change_rate": 0.52,
+      "market_cap_text": "25조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,596",
+      "display_name": "카카오"
+    },
+    {
+      "code": "373220",
+      "timestamp": "2026-02-23 10:11:07",
+      "name": "LG에너지솔루션",
+      "current_price": 398000,
+      "change": 3500,
+      "change_rate": -0.87,
+      "market_cap_text": "93조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,320",
+      "display_name": "LG에너지솔루션"
+    },
+    {
+      "code": "207940",
+      "timestamp": "2026-02-23 10:11:08",
+      "name": "삼성바이오로직스",
+      "current_price": 1743000,
+      "change": 7000,
+      "change_rate": 0.4,
+      "market_cap_text": "80조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,851",
+      "display_name": "삼성바이오로직스"
+    },
+    {
+      "code": "005490",
+      "timestamp": "2026-02-23 10:11:09",
+      "name": "POSCO홀딩스",
+      "current_price": 392500,
+      "change": 1500,
+      "change_rate": -0.38,
+      "market_cap_text": "31조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t7,662",
+      "display_name": "POSCO홀딩스"
+    },
+    {
+      "code": "005380",
+      "timestamp": "2026-02-23 10:11:10",
+      "name": "현대차",
+      "current_price": 530000,
+      "change": 21000,
+      "change_rate": 4.13,
+      "market_cap_text": "108조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t5,216",
+      "display_name": "현대차"
+    },
+    {
+      "code": "105560",
+      "timestamp": "2026-02-23 10:11:11",
+      "name": "KB금융",
+      "current_price": 166700,
+      "change": 2100,
+      "change_rate": -1.24,
+      "market_cap_text": "62조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t1,542",
+      "display_name": "KB금융"
+    },
+    {
+      "code": "051910",
+      "timestamp": "2026-02-23 10:11:12",
+      "name": "LG화학",
+      "current_price": 335000,
+      "change": 2000,
+      "change_rate": -0.59,
+      "market_cap_text": "23조\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t6,484",
+      "display_name": "LG화학"
+    }
+  ]
+}
