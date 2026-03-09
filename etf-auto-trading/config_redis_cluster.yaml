@@ -126,11 +126,11 @@ batch:
     - cleanup_redis_data
     - update_statistics
 
-# 알림 설정
+# 알림 설정  
 notifications:
   # 디스코드 웹훅 알림 (메인 알림 시스템)
   discord:
-    enabled: true  # 디스코드 기본 활성화
+    enabled: true
     webhook_url: "${DISCORD_WEBHOOK_URL}"
     signal_threshold: "medium"  # weak, medium, strong
     send_market_status: true    # 시장 개장/마감 알림
