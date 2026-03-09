@@ -29,7 +29,7 @@ NUM_MAX = 40
 SMTP_SERVER = "smtp.naver.com"
 SMTP_PORT = 587
 MAIL_FROM = "kto2004@naver.com"
-MAIL_PW = "kto8520!@#"  # 네이버 메일 비밀번호 (필요 시 변경)
+MAIL_PW = "LX3Q4R5WQPSF"  # 네이버 앱 비밀번호
 MAIL_TO = "kto2004@naver.com"
 
 LOGIN_URL = "https://www.dhlottery.co.kr/login"

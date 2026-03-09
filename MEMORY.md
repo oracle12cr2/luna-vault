@@ -36,10 +36,19 @@
 - zip bomb 오탐: `UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE unzip`
 - oracle19cogg01/02: 2노드 RAC, Grid Home: /grid/app/19.0.0/grid, DB Home: /oracle/app/oracle/product/19.0.0/dbhome_1
 
-## Cloud Control 13c
-- OEM 13.5 설치 중 (50.56, /cloud13cr5/oem)
-- RepManager 리포지토리 생성 완료 (2026-03-06)
-- DB 접속: 192.168.50.27:1521/PROD
+## Cloud Control 13c — 설치 완료! (2026-03-09)
+- OEM 13.5 R5 설치 완료 (50.56, /cloud13cr5/oem)
+- gc_inst: /cloud13cr5/gc_inst
+- 접속: https://192.168.50.56:7803/em (sysman / Oracle2026_em)
+- WLS Admin: https://2690v4:7102 (weblogic)
+- DB 리포지토리: oracle19c01:1521/PROD (SYSMAN 스키마)
+- 설치 기간: 3/4~3/9 (6일, silent 모드 ConfigureGC.sh)
+- 핵심 교훈:
+  - response 파일: EM_INSTALL_TYPE="NOSEED" 필수
+  - emInstanceMapping.properties 있으면 "home already in use" 에러
+  - MGMT_UPGRADEUTIL_TASK phase=8은 "incomplete upgrade" → 삭제 필요
+  - SYSMAN122140_* 스키마는 RCU로 별도 생성 (OPSS, IAU, MDS, STB, WLS)
+  - OUI 인벤토리 HOME_LIST, ConfigXML 상태도 체크 필요
 
 ## 도구
 - youtube-transcript-api로 유튜브 자막 추출 가능 (pip install youtube-transcript-api)
