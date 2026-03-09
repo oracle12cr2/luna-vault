@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 import requests
 from typing import Dict, List
 import logging
+from etf_discord_notifier import ETFDiscordNotifier
 
 class ETFRedisCollector:
     def __init__(self, config_file='config.yaml'):
@@ -20,6 +21,7 @@ class ETFRedisCollector:
         self.load_config(config_file)
         self.setup_redis()
         self.setup_logging()
+        self.setup_discord_notifier()
         
     def load_config(self, config_file):
         """설정 파일 로드"""
@@ -56,6 +58,32 @@ class ETFRedisCollector:
             ]
         )
         self.logger = logging.getLogger(__name__)
+
+    def setup_discord_notifier(self):
+        """디스코드 알림기 설정"""
+        try:
+            discord_config = self.config.get('notifications', {}).get('discord', {})
+            
+            if discord_config.get('enabled', False):
+                webhook_url = discord_config.get('webhook_url', '')
+                
+                if webhook_url:
+                    self.discord_notifier = ETFDiscordNotifier(webhook_url)
+                    self.discord_enabled = True
+                    self.logger.info("✅ 디스코드 알림 활성화")
+                else:
+                    self.discord_notifier = None
+                    self.discord_enabled = False
+                    self.logger.warning("⚠️ 디스코드 웹훅 URL 없음")
+            else:
+                self.discord_notifier = None
+                self.discord_enabled = False
+                self.logger.info("ℹ️ 디스코드 알림 비활성화")
+                
+        except Exception as e:
+            self.discord_notifier = None
+            self.discord_enabled = False
+            self.logger.error(f"❌ 디스코드 알림 설정 실패: {e}")
 
     def collect_etf_realtime_data(self):
         """실시간 ETF 데이터 수집"""
@@ -349,6 +377,22 @@ class ETFRedisCollector:
         self.redis_client.ltrim(redis_key_signals, 0, 999)  # 최신 1000개만 유지
         
         self.logger.info(f"매매 신호: {etf_code} {signal['type']} ({signal['strength']}) - {signal['reason']}")
+        
+        # 디스코드 알림 전송 (중요한 신호만)
+        if self.discord_enabled and signal['strength'] in ['STRONG', 'MEDIUM']:
+            try:
+                self.discord_notifier.send_trading_signal({
+                    'etf_code': etf_code,
+                    'signal_type': signal['type'],
+                    'signal_strength': signal['strength'], 
+                    'price': indicators_data['current_price'],
+                    'signal_reason': signal['reason'],
+                    'rsi_14': indicators_data.get('rsi_14'),
+                    'sma_5': indicators_data.get('sma_5'),
+                    'sma_20': indicators_data.get('sma_20')
+                })
+            except Exception as e:
+                self.logger.error(f"디스코드 알림 전송 실패: {e}")
 
     def get_realtime_data(self, etf_code: str) -> Dict:
         """실시간 데이터 조회"""
@@ -372,9 +416,31 @@ class ETFRedisCollector:
         """실시간 수집 실행 (장중)"""
         self.logger.info("ETF 실시간 수집 시작")
         
+        # 시장 상태 추적 변수
+        last_market_status = None
+        
         try:
             while True:
                 market_hours = self.is_market_hours()
+                
+                # 시장 상태 변화 감지 및 알림
+                if market_hours != last_market_status:
+                    if market_hours:
+                        self.logger.info("🔔 한국 주식 시장 개장 - 실시간 수집 시작")
+                        if self.discord_enabled:
+                            try:
+                                self.discord_notifier.send_market_status(True)
+                            except Exception as e:
+                                self.logger.error(f"시장 개장 알림 실패: {e}")
+                    else:
+                        self.logger.info("🔔 한국 주식 시장 마감 - 실시간 수집 중단")
+                        if self.discord_enabled:
+                            try:
+                                self.discord_notifier.send_market_status(False)
+                            except Exception as e:
+                                self.logger.error(f"시장 마감 알림 실패: {e}")
+                    
+                    last_market_status = market_hours
                 
                 if market_hours:
                     self.collect_etf_realtime_data()

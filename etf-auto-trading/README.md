@@ -444,3 +444,91 @@ python3 etf_redis_cluster.py cleanup
 bash scripts/setup_redis_hybrid.sh
 ```
 
+
+---
+
+## 🎨 디스코드 실시간 알림 (v1.1.2 NEW!)
+
+### 💬 텔레그램 → 디스코드 업그레이드!
+
+**이제 예쁜 디스코드 임베드 메시지로 매매 신호를 받아보세요!**
+
+### 🎯 디스코드 알림 장점
+- **🎨 예쁜 임베드**: 색상과 이모지로 직관적 신호 전달
+- **⚡ 즉시 알림**: 웹훅을 통한 실시간 전송  
+- **📱 모바일 지원**: 디스코드 앱 푸시 알림
+- **🔧 간단한 설정**: 봇 없이 웹훅만으로 완료
+
+### 💬 실시간 알림 예시
+```
+🟢 매수 신호 🔥🔥🔥
+KODEX 200 (069500)
+
+💰 현재가: 27,500원
+📊 신호 강도: STRONG 🔥🔥🔥
+🕐 시간: 14:25:30
+
+📋 신호 근거: RSI 극과매도 (18.3) + 골든크로스
+📈 RSI(14): 18.3 📉 극과매도
+📊 SMA5/20: 27450/27200
+
+🤖 루나 ETF 자동매매 시스템
+```
+
+### 🔔 시장 상태 알림
+- **🟢 시장 개장**: "한국 주식 시장 개장! ETF 실시간 모니터링 시작"
+- **🔴 시장 마감**: "거래 종료! Redis → Oracle 배치 처리 시작"
+
+### 📊 일일 요약 리포트
+```
+📊 ETF 매매 신호 일일 요약
+2026-03-09 장 마감 결과
+
+📈 총 신호: 🟢 매수 5개 | 🔴 매도 2개 | ⚪ 보유 3개
+🔥 강한 신호: 3개
+
+🔥 주요 강한 신호:
+🟢 KODEX 200 BUY - 27,500원
+🟢 TIGER IT BUY - 19,800원
+```
+
+### 🚀 디스코드 설정 (2분 완료!)
+
+#### 1. 디스코드 웹훅 생성
+```bash
+1. 디스코드 서버에서 #etf-signals 채널 생성
+2. 채널 설정 → 연동 → 웹후크 → 새 웹후크
+3. 웹후크 URL 복사
+```
+
+#### 2. ETF 시스템 설정
+```bash
+# .env 파일에 웹훅 URL 추가
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK
+
+# config.yaml에서 활성화
+notifications:
+  discord:
+    enabled: true  # false → true 변경
+```
+
+#### 3. 알림 테스트
+```bash
+# 디스코드 연결 테스트
+python3 etf_discord_notifier.py
+
+# 실시간 알림 시작
+python3 etf_redis_realtime.py
+```
+
+### 📚 상세 가이드
+- **완전한 설정 가이드**: `docs/discord_setup_guide.md`
+- **알림 메시지 유형**: 매매 신호, 시장 상태, 일일 요약, 시스템 알럿
+- **고급 설정**: 신호 필터링, 메시지 커스터마이징
+
+### 🆕 새로운 파일들
+- `etf_discord_notifier.py` (14.9KB) - 디스코드 알림기
+- `docs/discord_setup_guide.md` (4.6KB) - 설정 가이드
+- `etf_redis_realtime.py` - 디스코드 통합 업데이트
+- `config.yaml` - 디스코드 설정 추가
+

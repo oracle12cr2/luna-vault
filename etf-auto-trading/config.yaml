@@ -128,6 +128,15 @@ batch:
 
 # 알림 설정
 notifications:
+  # 디스코드 웹훅 알림 (추천)
+  discord:
+    enabled: false  # true로 변경해서 활성화
+    webhook_url: "${DISCORD_WEBHOOK_URL}"
+    signal_threshold: "medium"  # weak, medium, strong
+    send_market_status: true    # 시장 개장/마감 알림
+    send_daily_summary: true    # 일일 요약 알림
+    
+  # 텔레그램 알림 (레거시)
   telegram:
     enabled: false
     bot_token: "${TELEGRAM_BOT_TOKEN}"
