@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-03-09T20:54:05.743326",
+  "total_etfs": 10,
+  "etfs": [
+    {
+      "code": "069500",
+      "name": "KODEX 200",
+      "category": "Large Cap",
+      "expense_ratio": 0.0015,
+      "nav": 27226.11,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "091170",
+      "name": "TIGER Construction",
+      "category": "Construction",
+      "expense_ratio": 0.0015,
+      "nav": 8232.08,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "091230",
+      "name": "KODEX Battery",
+      "category": "Battery",
+      "expense_ratio": 0.0045,
+      "nav": 7382.35,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "102110",
+      "name": "TIGER 200IT",
+      "category": "IT Sector",
+      "expense_ratio": 0.0015,
+      "nav": 19795.43,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "130680",
+      "name": "TIGER Oil Futures",
+      "category": "Commodity",
+      "expense_ratio": 0.0045,
+      "nav": 4000.39,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "133690",
+      "name": "TIGER NASDAQ100",
+      "category": "US Tech",
+      "expense_ratio": 0.0045,
+      "nav": 28583.51,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "160580",
+      "name": "KODEX Samsung Pref",
+      "category": "Preferred",
+      "expense_ratio": 0.0015,
+      "nav": 9284.4,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "161510",
+      "name": "KODEX High Dividend",
+      "category": "Dividend",
+      "expense_ratio": 0.0025,
+      "nav": 11748.92,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "229200",
+      "name": "KODEX KOSDAQ150",
+      "category": "KOSDAQ",
+      "expense_ratio": 0.0015,
+      "nav": 8519.56,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    },
+    {
+      "code": "449180",
+      "name": "KODEX US SP500",
+      "category": "US Large Cap",
+      "expense_ratio": 0.0008,
+      "nav": 15316.52,
+      "data_count": 3,
+      "first_date": "2026-03-05T00:00:00",
+      "last_date": "2026-03-09T00:00:00"
+    }
+  ]
+}

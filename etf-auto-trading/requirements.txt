@@ -1,0 +1,47 @@
+# ETF 자동매매 시스템 의존성 패키지
+
+# 데이터베이스
+cx-Oracle==8.3.0
+
+# 데이터 분석
+pandas==2.3.3
+numpy==2.0.2
+
+# 기술적 분석
+TA-Lib==0.6.8
+
+# HTTP 요청
+requests==2.31.0
+
+# 날짜/시간 처리
+python-dateutil==2.9.0
+
+# 설정 파일 (YAML)
+PyYAML==6.0.1
+
+# 로깅 (고급 기능)
+colorlog==6.8.2
+
+# 환경변수 관리
+python-dotenv==1.0.1
+
+# 스케줄링 (cron 대안)
+schedule==1.2.0
+
+# 텔레그램 봇 (선택사항)
+python-telegram-bot==20.8
+
+# 웹 서버 (선택사항)
+flask==3.0.0
+
+# 데이터 시각화 (선택사항)
+matplotlib==3.8.2
+plotly==5.17.0
+
+# 백테스팅 (고급)
+backtrader==1.9.78.123
+
+# 개발/테스트 도구
+pytest==7.4.4
+black==23.12.1
+flake8==7.0.0
