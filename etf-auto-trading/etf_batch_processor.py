@@ -29,7 +29,7 @@ class ETFBatchProcessor:
     def setup_redis(self):
         """Redis 연결"""
         self.redis_client = redis.Redis(
-            host='192.168.50.9',
+            host='192.168.50.3',
             port=6379,
             password='redis',
             decode_responses=True

@@ -411,3 +411,36 @@ python3 etf_batch_processor.py manual
 
 **⚡ 이제 진정한 실시간 ETF 자동매매 시스템입니다!**
 
+
+---
+
+## 🔧 Redis 클러스터 설정 업데이트 (v1.1.1)
+
+### 📡 실제 Redis 클러스터 정보
+```
+Node 1: 192.168.50.3:6379 ✅
+Node 2: 192.168.50.4:6379 ✅  
+Node 3: 192.168.50.5:6379 ✅
+Password: redis
+Cluster State: OK
+```
+
+### 🔄 업데이트 내용
+- **etf_redis_realtime.py**: 192.168.50.3 노드 연결
+- **etf_batch_processor.py**: 클러스터 첫 번째 노드 연결  
+- **config.yaml**: 완전한 클러스터 설정 추가
+- **etf_redis_cluster.py**: 클러스터 관리 도구 추가
+- **setup_redis_hybrid.sh**: 3노드 클러스터 지원
+
+### ⚡ 클러스터 관리 도구
+```bash
+# 클러스터 상태 확인
+python3 etf_redis_cluster.py
+
+# 클러스터 데이터 정리  
+python3 etf_redis_cluster.py cleanup
+
+# 자동 설정 (클러스터 지원)
+bash scripts/setup_redis_hybrid.sh
+```
+

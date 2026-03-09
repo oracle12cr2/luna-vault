@@ -29,7 +29,7 @@ class ETFRedisCollector:
     def setup_redis(self):
         """Redis 클러스터 연결"""
         redis_config = {
-            'host': '192.168.50.9',  # 기존 Redis 서버
+            'host': '192.168.50.3',  # Redis 클러스터 첫 번째 노드
             'port': 6379,
             'password': 'redis',
             'decode_responses': True

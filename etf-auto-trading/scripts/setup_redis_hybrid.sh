@@ -36,22 +36,31 @@ else
     fi
 fi
 
-# 2. Redis 연결 테스트
+# 2. Redis 클러스터 연결 테스트
 echo ""
 echo -e "${YELLOW}🔴 Redis 클러스터 연결 테스트...${NC}"
 
+# Redis 클러스터 노드들 테스트
+REDIS_NODES=("192.168.50.3" "192.168.50.4" "192.168.50.5")
+ACTIVE_NODES=0
+
 if command -v redis-cli &> /dev/null; then
-    if redis-cli -h 192.168.50.9 -p 6379 -a redis ping > /dev/null 2>&1; then
-        echo -e "  ✅ Redis 연결 성공 (192.168.50.9:6379)"
-        
-        # Redis 정보 확인
-        echo "  📊 Redis 상태:"
-        redis-cli -h 192.168.50.9 -p 6379 -a redis info memory | grep "used_memory_human"
-        redis-cli -h 192.168.50.9 -p 6379 -a redis info stats | grep "total_commands_processed"
-        
-    else
-        echo -e "  ❌ Redis 연결 실패"
-        echo "  Redis 서버 상태를 확인해주세요."
+    for NODE in "${REDIS_NODES[@]}"; do
+        if redis-cli -h $NODE -p 6379 -a redis ping > /dev/null 2>&1; then
+            echo -e "  ✅ $NODE:6379 연결 성공"
+            ACTIVE_NODES=$((ACTIVE_NODES + 1))
+        else
+            echo -e "  ❌ $NODE:6379 연결 실패"
+        fi
+    done
+    
+    echo -e "  📊 활성 노드: ${ACTIVE_NODES}/3개"
+    
+    if [ $ACTIVE_NODES -gt 0 ]; then
+        # 첫 번째 활성 노드에서 정보 확인
+        echo "  📊 Redis 상태 (192.168.50.3):"
+        redis-cli -h 192.168.50.3 -p 6379 -a redis info memory 2>/dev/null | grep "used_memory_human" || true
+        redis-cli -h 192.168.50.3 -p 6379 -a redis cluster info 2>/dev/null | grep "cluster_state" || true
     fi
 else
     echo -e "  ⚠️  redis-cli 명령어 없음"
@@ -108,8 +117,8 @@ cat >> "$TEMP_CRON" << EOF
 # ETF Redis + Oracle 하이브리드 시스템 - $(date)
 # ================================================
 
-# Redis 상태 점검 (매일 오전 8시)
-0 8 * * * redis-cli -h 192.168.50.9 -p 6379 -a redis ping >> ${PROJECT_DIR}/logs/redis/health.log 2>&1
+# Redis 클러스터 상태 점검 (매일 오전 8시)
+0 8 * * * for node in 192.168.50.3 192.168.50.4 192.168.50.5; do redis-cli -h \$node -p 6379 -a redis ping >> ${PROJECT_DIR}/logs/redis/health.log 2>&1; done
 
 # 실시간 수집 시작 (평일 오전 8시 50분 - 장 시작 10분 전)
 50 8 * * 1-5 cd ${PROJECT_DIR} && pkill -f etf_redis_realtime.py; nohup python3 etf_redis_realtime.py >> logs/redis/realtime.log 2>&1 &
@@ -117,8 +126,8 @@ cat >> "$TEMP_CRON" << EOF
 # 배치 처리 (평일 오후 4시 - 장 종료 후)
 0 16 * * 1-5 cd ${PROJECT_DIR} && python3 etf_batch_processor.py manual >> logs/batch/daily.log 2>&1
 
-# 주간 Redis 정리 (일요일 오전 2시)
-0 2 * * 0 redis-cli -h 192.168.50.9 -p 6379 -a redis FLUSHDB >> ${PROJECT_DIR}/logs/redis/cleanup.log 2>&1
+# 주간 Redis 정리 (일요일 오전 2시) - 클러스터 전체
+0 2 * * 0 cd ${PROJECT_DIR} && python3 etf_redis_cluster.py cleanup >> ${PROJECT_DIR}/logs/redis/cleanup.log 2>&1
 
 # 로그 파일 정리 (월요일 오전 3시)
 0 3 * * 1 find ${PROJECT_DIR}/logs -name "*.log" -mtime +30 -delete

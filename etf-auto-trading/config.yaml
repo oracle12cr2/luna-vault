@@ -1,44 +1,62 @@
-# ETF 자동매매 시스템 설정
+# ETF 자동매매 시스템 설정 (Redis 클러스터 업데이트)
 
 # 데이터베이스 설정
 database:
-  type: "oracle"  # oracle, postgresql
+  type: "oracle"
   host: "oracle19c01"
   port: 1521
-  service: "PROD"  # Oracle 서비스명
+  service: "PROD"
   user: "stock"
   password: "stock123"
   
-  # 연결 풀 설정
   pool_size: 5
   max_overflow: 10
-  
-  # 테이블 prefix (선택사항)
   table_prefix: "etf_"
+
+# Redis 클러스터 설정 (실제 구성)
+redis_cluster:
+  # 클러스터 노드들
+  nodes:
+    - host: "192.168.50.3"
+      port: 6379
+    - host: "192.168.50.4"
+      port: 6379
+    - host: "192.168.50.5"
+      port: 6379
+  
+  # 클러스터 설정
+  password: "redis"
+  decode_responses: true
+  skip_full_coverage_check: true
+  health_check_interval: 30
+  
+  # 연결 풀 설정
+  max_connections: 50
+  retry_on_timeout: true
+  socket_timeout: 5
+  socket_connect_timeout: 5
+
+# 레거시 Redis 설정 (백워드 호환)
+redis:
+  host: "192.168.50.3"  # 클러스터 첫 번째 노드
+  port: 6379
+  password: "redis"
 
 # 한국투자증권 API 설정
 kis_api:
-  # 실서버 URL
   base_url: "https://openapi.koreainvestment.com:9443"
-  
-  # 모의서버 URL (테스트용)
   demo_url: "https://openapivts.koreainvestment.com:29443"
-  
-  # 사용 환경 (demo/real)
   environment: "demo"
   
-  # API 키 (환경변수에서 로드 권장)
   app_key: "${KIS_APP_KEY}"
   app_secret: "${KIS_APP_SECRET}"
   account_no: "${KIS_ACCOUNT_NO}"
   
-  # 요청 한도
   daily_limit: 10000
   requests_per_second: 10
 
 # ETF 종목 설정
 etf:
-  # 모니터링 대상 ETF 목록
   target_codes:
     - "069500"  # KODEX 200
     - "229200"  # KODEX KOSDAQ150
@@ -50,160 +68,114 @@ etf:
     - "160580"  # KODEX 삼성우선주
     - "091170"  # TIGER 건설
     - "130680"  # TIGER 원유선물
-  
-  # ETF 메타데이터
-  metadata:
-    "069500":
-      name: "KODEX 200"
-      category: "Large Cap"
-      expense_ratio: 0.0015
-    "229200":
-      name: "KODEX KOSDAQ150"
-      category: "KOSDAQ"
-      expense_ratio: 0.0015
-    # ... (다른 ETF들도 동일하게)
 
 # 기술적 지표 설정
 technical_indicators:
-  # 이동평균
   sma_periods: [5, 20, 60, 200]
   ema_periods: [5, 20, 60, 200]
-  
-  # 모멘텀 지표
   rsi_period: 14
   
-  # MACD
   macd:
     fast_period: 12
     slow_period: 26
     signal_period: 9
   
-  # 볼린저 밴드
   bollinger:
     period: 20
     std_dev: 2
-  
-  # 거래량 지표
-  volume_sma_period: 20
 
 # 매매 신호 설정
 trading_signals:
-  # RSI 임계값
   rsi:
     oversold: 30
     oversold_strong: 20
     overbought: 70
     overbought_strong: 80
   
-  # 볼린저 밴드 임계값
-  bollinger:
-    lower_threshold: 0.2
-    upper_threshold: 0.8
-  
-  # 신호 강도 가중치
   signal_weights:
     strong: 3
     medium: 2
     weak: 1
-  
-  # 최소 신호 점수 차이
-  min_score_diff:
-    strong: 4
-    medium: 2
 
-# 데이터 수집 설정
-data_collection:
-  # 수집 주기 (분)
-  realtime_interval: 10
+# 실시간 데이터 수집 설정
+realtime:
+  collection_interval: 10  # 초
+  market_hours:
+    start: "09:00"
+    end: "15:30"
+    timezone: "Asia/Seoul"
   
-  # 기술적 지표 계산 주기 (분)
-  technical_interval: 30
+  # Redis 키 TTL 설정
+  ttl:
+    current_data: 86400      # 24시간
+    timeseries: 86400        # 24시간  
+    daily_data: 604800       # 7일
+    indicators: 86400        # 24시간
+
+# 배치 처리 설정
+batch:
+  schedule_time: "16:00"     # 장 종료 후
+  cleanup_days: 7            # Redis 정리 주기
+  backup_retention: 30       # 백업 보관 일수
   
-  # 매매 신호 생성 주기 (분)  
-  signal_interval: 60
-  
-  # 과거 데이터 보관 기간 (일)
-  retention_days: 365
-  
-  # 백업 설정
-  backup:
-    enabled: true
-    interval_days: 7
-    retention_weeks: 12
+  # 배치 처리 순서
+  steps:
+    - migrate_daily_prices
+    - migrate_technical_indicators
+    - migrate_trading_signals
+    - cleanup_redis_data
+    - update_statistics
 
 # 알림 설정
 notifications:
-  # 텔레그램 봇
   telegram:
     enabled: false
     bot_token: "${TELEGRAM_BOT_TOKEN}"
     chat_id: "${TELEGRAM_CHAT_ID}"
+    signal_threshold: "medium"
     
-    # 알림 조건
-    signal_threshold: "medium"  # weak, medium, strong
-    
-  # 이메일 (선택사항)
   email:
     enabled: false
     smtp_server: "smtp.gmail.com"
     smtp_port: 587
     username: "${EMAIL_USERNAME}"
     password: "${EMAIL_PASSWORD}"
-    to_address: "${EMAIL_TO}"
 
 # 로깅 설정
 logging:
-  # 로그 레벨 (DEBUG, INFO, WARNING, ERROR)
   level: "INFO"
   
-  # 로그 파일 설정
   file:
     enabled: true
     path: "logs/"
     max_size_mb: 100
     backup_count: 5
     
-  # 콘솔 출력
   console:
     enabled: true
     colored: true
 
-# 보안 설정
-security:
-  # 암호화 키 (데이터베이스 암호화용)
-  encryption_key: "${ENCRYPTION_KEY}"
-  
-  # API 키 암호화 저장
-  encrypt_api_keys: true
-  
-  # 로그에서 민감 정보 마스킹
-  mask_sensitive_data: true
-
 # 성능 설정
 performance:
-  # 멀티프로세싱 사용
   multiprocessing: false
   worker_processes: 4
   
-  # 캐싱 설정
   cache:
     enabled: true
     ttl_minutes: 5
     
-  # 배치 처리 크기
   batch_size: 100
 
-# 개발/테스트 설정  
+# 보안 설정
+security:
+  encryption_key: "${ENCRYPTION_KEY}"
+  encrypt_api_keys: true
+  mask_sensitive_data: true
+
+# 개발/테스트 설정
 development:
-  # 시뮬레이션 모드
   simulation_mode: true
-  
-  # 테스트 데이터 생성
   generate_test_data: true
   test_data_days: 180
-  
-  # API 요청 딜레이 (초)
   api_delay: 0.5
-  
-  # 디버그 모드
   debug: false
