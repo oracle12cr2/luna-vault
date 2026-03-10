@@ -4,23 +4,28 @@ data:
   start_date: "2020-01-01"
   end_date: "2023-12-31"
   
-  # 확정 ETF 10종 (국내만, 해외 제외, 인버스 제외)
+  # 핵심 6종 포트폴리오 (930만원, 소액 집중)
   etfs:
-    ace200: "102110.KS"                # 1. ACE 200 (코스피200 대표, 한투신탁)
-    kosdaq150: "229200.KS"            # 2. KOSDAQ150 (코스닥 대표)
-    tiger_it: "098560.KS"             # 3. TIGER IT (IT 섹터)
-    kodex_dividend: "279530.KS"       # 4. KODEX 고배당 (배당주)
-    kodex_battery: "305720.KS"        # 5. KODEX 2차전지산업 (2차전지)
-    tiger_semi: "091230.KS"           # 6. TIGER 반도체 (반도체 섹터)
-    kodex_leverage: "122630.KS"       # 7. KODEX 레버리지 (코스피 2배)
-    tiger_bank: "091220.KS"           # 8. TIGER 은행 (금융 섹터)
-    kodex_gold: "132030.KS"           # 9. KODEX 골드선물(H) (금)
-    kodex_bond: "148070.KS"           # 10. KODEX 국고채10년 (채권)
-    
+    ace200: "102110.KS"                # 1. ACE 200 (시장 대표) - 25%
+    kodex_leverage: "122630.KS"        # 2. KODEX 레버리지 (공격형) - 15%
+    tiger_semi: "091230.KS"            # 3. TIGER 반도체 (성장 섹터) - 20%
+    kodex_dividend: "279530.KS"        # 4. KODEX 고배당 (안정+배당) - 15%
+    kodex_gold: "132030.KS"            # 5. KODEX 골드선물(H) (헤지) - 15%
+    kodex_bond: "148070.KS"            # 6. KODEX 국고채10년 (안전자산) - 10%
+
+  # 종목별 비중
+  weights:
+    ace200: 0.25
+    kodex_leverage: 0.15
+    tiger_semi: 0.20
+    kodex_dividend: 0.15
+    kodex_gold: 0.15
+    kodex_bond: 0.10
+
 # 백테스트 설정
 backtest:
-  initial_cash: 10000000  # 1천만원
-  commission: 0.0015       # 수수료 0.15%
+  initial_cash: 9300000   # 930만원
+  commission: 0.0015      # 수수료 0.15%
   
 # 전략별 파라미터
 strategies:
@@ -46,6 +51,16 @@ strategies:
     params:
       lookback_period: 252  # 1년
       risk_free_rate: 0.02  # 2%
+
+  grid_trading:
+    name: "분할매매 전략 (추천)"
+    enabled: true
+    params:
+      ma_period: 10          # 최적화: 20→10
+      grid_pct: 5            # 매매 기준 이격도 (%)
+      sell_pct: 5            # 최적화: 10→5 (보유량의 %)
+      buy_pct: 15            # 최적화: 10→15 (현금의 %)
+      # 결과: 수익률 37.4%, 샤프 0.62, DD -21.9%
       
   asset_allocation:
     name: "정적 자산배분 전략"

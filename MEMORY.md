@@ -50,6 +50,19 @@
   - SYSMAN122140_* 스키마는 RCU로 별도 생성 (OPSS, IAU, MDS, STB, WLS)
   - OUI 인벤토리 HOME_LIST, ConfigXML 상태도 체크 필요
 
+## 주식/ETF 투자 시스템
+- 투자금: 1천만원 (변경: 1억→1천만)
+- 한국투자증권 계좌: 화정PB센터에서 모바일 OTP 발급 (2026-03-10)
+- KIS OpenAPI 키 발급 완료
+- DART API 연동 완료
+- 데이터 파이프라인: KIS/DART API → Redis (50.9) → Oracle DB (50.31)
+- ETF 백테스트 대시보드: http://192.168.50.56:8501 (Streamlit)
+- ETF 포트폴리오: ACE200, KOSDAQ150, TIGER IT, KODEX 고배당/2차전지/레버리지/골드/국고채, TIGER 반도체/은행
+- RSI 최적 파라미터: 기간12, 과매도11, 과매수55 (수익률 11.4%, DD -1.7%)
+- 분할매매 전략 추가: 이평선 기준 오르면 일부 매도(수익실현), 내리면 분할매수
+- 스크립트: /usr/local/bin/kis_realtime.py, kis_candle.py, dart_*.py, etf_redis_realtime.py
+- 다음 단계: 자동매매 로직 연결, 디스코드 매매신호 알림
+
 ## 도구
 - youtube-transcript-api로 유튜브 자막 추출 가능 (pip install youtube-transcript-api)
 
