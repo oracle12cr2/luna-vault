@@ -58,10 +58,17 @@
 - 데이터 파이프라인: KIS/DART API → Redis (50.9) → Oracle DB (50.31)
 - ETF 백테스트 대시보드: http://192.168.50.56:8501 (Streamlit)
 - ETF 포트폴리오: ACE200, KOSDAQ150, TIGER IT, KODEX 고배당/2차전지/레버리지/골드/국고채, TIGER 반도체/은행
-- RSI 최적 파라미터: 기간12, 과매도11, 과매수55 (수익률 11.4%, DD -1.7%)
-- 분할매매 전략 추가: 이평선 기준 오르면 일부 매도(수익실현), 내리면 분할매수
+- 종목별 최적 전략 (워크포워드 검증 PASS):
+  - ACE200 → MA(3/15): OOS +58.2%, 샤프 2.67
+  - KODEX레버리지 → MA(3/15): OOS +135.4%, 샤프 2.57
+  - TIGER반도체 → RSI(9/30/75): OOS +31.1%, 샤프 1.58
+  - KODEX고배당 → MA(7/30): OOS +31.1%, 샤프 2.02
+  - KODEX골드 → BB(15/1.5): OOS +11.2%, 샤프 1.73
+- 분할매매 최적: MA10/이격5%/매도5%/매수15% (수익률 37.4%, 샤프 0.62)
+- 디스코드 알림: #etf-signals 채널 (Luna 서버)
 - 스크립트: /usr/local/bin/kis_realtime.py, kis_candle.py, dart_*.py, etf_redis_realtime.py
-- 다음 단계: 자동매매 로직 연결, 디스코드 매매신호 알림
+- 리포트: etf-backtest/reports/ (optimize_report.html, walkforward_report.html)
+- 다음 단계: 모의투자 API 키 발급, 종목별 전략 자동매매 연결
 
 ## 도구
 - youtube-transcript-api로 유튜브 자막 추출 가능 (pip install youtube-transcript-api)
