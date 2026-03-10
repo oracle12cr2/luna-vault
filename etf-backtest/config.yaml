@@ -4,23 +4,21 @@ data:
   start_date: "2020-01-01"
   end_date: "2023-12-31"
   
-  # 핵심 6종 포트폴리오 (930만원, 소액 집중)
+  # 핵심 5종 포트폴리오 (930만원, 소액 집중)
   etfs:
-    ace200: "102110.KS"                # 1. ACE 200 (시장 대표) - 25%
+    ace200: "102110.KS"                # 1. ACE 200 (시장 대표) - 30%
     kodex_leverage: "122630.KS"        # 2. KODEX 레버리지 (공격형) - 15%
-    tiger_semi: "091230.KS"            # 3. TIGER 반도체 (성장 섹터) - 20%
+    tiger_semi: "091230.KS"            # 3. TIGER 반도체 (성장 섹터) - 25%
     kodex_dividend: "279530.KS"        # 4. KODEX 고배당 (안정+배당) - 15%
     kodex_gold: "132030.KS"            # 5. KODEX 골드선물(H) (헤지) - 15%
-    kodex_bond: "148070.KS"            # 6. KODEX 국고채10년 (안전자산) - 10%
 
   # 종목별 비중
   weights:
-    ace200: 0.25
+    ace200: 0.30
     kodex_leverage: 0.15
-    tiger_semi: 0.20
+    tiger_semi: 0.25
     kodex_dividend: 0.15
     kodex_gold: 0.15
-    kodex_bond: 0.10
 
 # 백테스트 설정
 backtest:
