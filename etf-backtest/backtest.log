@@ -1,0 +1,55 @@
+2026-03-10 10:28:37,306 - data.collector - ERROR - 069500.KS 데이터 수집 실패: Setting period, start and end is nonsense. Set maximum 2 of them.
+2026-03-10 10:28:37,442 - data.collector - ERROR - 360750.KS 데이터 수집 실패: Setting period, start and end is nonsense. Set maximum 2 of them.
+2026-03-10 10:28:37,712 - data.collector - ERROR - 122630.KS 데이터 수집 실패: Setting period, start and end is nonsense. Set maximum 2 of them.
+2026-03-10 10:28:37,843 - data.collector - ERROR - 133690.KS 데이터 수집 실패: Setting period, start and end is nonsense. Set maximum 2 of them.
+2026-03-10 10:28:37,985 - data.collector - ERROR - 148070.KS 데이터 수집 실패: Setting period, start and end is nonsense. Set maximum 2 of them.
+2026-03-10 10:29:00,964 - data.collector - ERROR - 069500.KS 데이터 수집 실패: Length mismatch: Expected axis has 8 elements, new values have 7 elements
+2026-03-10 10:29:01,124 - data.collector - ERROR - 360750.KS 데이터 수집 실패: Length mismatch: Expected axis has 8 elements, new values have 7 elements
+2026-03-10 10:29:01,280 - data.collector - ERROR - 122630.KS 데이터 수집 실패: Length mismatch: Expected axis has 8 elements, new values have 7 elements
+2026-03-10 10:29:01,448 - data.collector - ERROR - 133690.KS 데이터 수집 실패: Length mismatch: Expected axis has 8 elements, new values have 7 elements
+2026-03-10 10:29:01,681 - data.collector - ERROR - 148070.KS 데이터 수집 실패: Length mismatch: Expected axis has 8 elements, new values have 7 elements
+2026-03-10 10:29:28,035 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 10:29:28,037 - data.collector - INFO - 069500.KS 데이터 수집 완료: 966개 행
+2026-03-10 10:29:28,039 - data.collector - INFO - 069500.KS: 데이터 검증 통과
+2026-03-10 10:29:28,225 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 10:29:28,229 - data.collector - INFO - 360750.KS 데이터 수집 완료: 818개 행
+2026-03-10 10:29:28,234 - data.collector - INFO - 360750.KS: 데이터 검증 통과
+2026-03-10 10:29:28,395 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 10:29:28,398 - data.collector - INFO - 122630.KS 데이터 수집 완료: 966개 행
+2026-03-10 10:29:28,400 - data.collector - INFO - 122630.KS: 데이터 검증 통과
+2026-03-10 10:29:28,577 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 10:29:28,583 - data.collector - INFO - 133690.KS 데이터 수집 완료: 966개 행
+2026-03-10 10:29:28,587 - data.collector - INFO - 133690.KS: 데이터 검증 통과
+2026-03-10 10:29:28,828 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 10:29:28,831 - data.collector - INFO - 148070.KS 데이터 수집 완료: 965개 행
+2026-03-10 10:29:28,833 - data.collector - INFO - 148070.KS: 데이터 검증 통과
+2026-03-10 11:37:58,073 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:58,075 - data.collector - INFO - 069500.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:37:58,076 - data.collector - INFO - 069500.KS: 데이터 검증 통과
+2026-03-10 11:37:58,396 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:58,399 - data.collector - INFO - 229200.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:37:58,403 - data.collector - INFO - 229200.KS: 데이터 검증 통과
+2026-03-10 11:37:58,735 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:58,738 - data.collector - INFO - 098560.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:37:58,741 - data.collector - INFO - 098560.KS: 데이터 검증 통과
+2026-03-10 11:37:59,153 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:59,158 - data.collector - INFO - 279530.KS 데이터 수집 완료: 965개 행
+2026-03-10 11:37:59,166 - data.collector - INFO - 279530.KS: 데이터 검증 통과
+2026-03-10 11:37:59,493 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:59,499 - data.collector - INFO - 305720.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:37:59,502 - data.collector - INFO - 305720.KS: 데이터 검증 통과
+2026-03-10 11:37:59,852 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:37:59,855 - data.collector - INFO - 091230.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:37:59,860 - data.collector - INFO - 091230.KS: 데이터 검증 통과
+2026-03-10 11:38:00,117 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:38:00,136 - data.collector - INFO - 122630.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:38:00,154 - data.collector - INFO - 122630.KS: 데이터 검증 통과
+2026-03-10 11:38:00,618 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:38:00,632 - data.collector - INFO - 091220.KS 데이터 수집 완료: 965개 행
+2026-03-10 11:38:00,639 - data.collector - INFO - 091220.KS: 데이터 검증 통과
+2026-03-10 11:38:01,023 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:38:01,027 - data.collector - INFO - 132030.KS 데이터 수집 완료: 966개 행
+2026-03-10 11:38:01,031 - data.collector - INFO - 132030.KS: 데이터 검증 통과
+2026-03-10 11:38:01,296 - data.collector - INFO - 원본 컬럼: ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits', 'Capital Gains']
+2026-03-10 11:38:01,300 - data.collector - INFO - 148070.KS 데이터 수집 완료: 965개 행
+2026-03-10 11:38:01,303 - data.collector - INFO - 148070.KS: 데이터 검증 통과

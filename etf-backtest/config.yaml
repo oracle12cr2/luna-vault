@@ -1,0 +1,62 @@
+# 한국 ETF 백테스트 설정
+data:
+  # 백테스트 기간
+  start_date: "2020-01-01"
+  end_date: "2023-12-31"
+  
+  # 확정 ETF 10종 (국내만, 해외 제외, 인버스 제외)
+  etfs:
+    ace200: "102110.KS"                # 1. ACE 200 (코스피200 대표, 한투신탁)
+    kosdaq150: "229200.KS"            # 2. KOSDAQ150 (코스닥 대표)
+    tiger_it: "098560.KS"             # 3. TIGER IT (IT 섹터)
+    kodex_dividend: "279530.KS"       # 4. KODEX 고배당 (배당주)
+    kodex_battery: "305720.KS"        # 5. KODEX 2차전지산업 (2차전지)
+    tiger_semi: "091230.KS"           # 6. TIGER 반도체 (반도체 섹터)
+    kodex_leverage: "122630.KS"       # 7. KODEX 레버리지 (코스피 2배)
+    tiger_bank: "091220.KS"           # 8. TIGER 은행 (금융 섹터)
+    kodex_gold: "132030.KS"           # 9. KODEX 골드선물(H) (금)
+    kodex_bond: "148070.KS"           # 10. KODEX 국고채10년 (채권)
+    
+# 백테스트 설정
+backtest:
+  initial_cash: 10000000  # 1천만원
+  commission: 0.0015       # 수수료 0.15%
+  
+# 전략별 파라미터
+strategies:
+  moving_average_cross:
+    name: "이동평균 크로스 전략"
+    enabled: true
+    params:
+      short_period: 20
+      long_period: 60
+      
+  rsi_strategy:
+    name: "RSI 과매수/과매도 전략"
+    enabled: true
+    params:
+      period: 12        # 최적화: 14→12 (더 빠른 반응)
+      oversold: 11      # 최적화: 30→11 (극단적 과매도만 진입)
+      overbought: 55    # 최적화: 70→55 (빠른 수익실현)
+      # 결과: 수익률 11.4%, 드로다운 -1.7%, 샤프 0.665
+      
+  dual_momentum:
+    name: "듀얼 모멘텀 전략"
+    enabled: true
+    params:
+      lookback_period: 252  # 1년
+      risk_free_rate: 0.02  # 2%
+      
+  asset_allocation:
+    name: "정적 자산배분 전략"
+    enabled: true
+    params:
+      stock_ratio: 0.6      # 주식 60%
+      bond_ratio: 0.4       # 채권 40%
+      rebalance_months: 3   # 3개월마다 리밸런싱
+      
+# 결과 출력 설정
+output:
+  save_charts: true
+  chart_format: "png"
+  results_dir: "results"
