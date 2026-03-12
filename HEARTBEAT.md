@@ -6,6 +6,11 @@
 
 # Add tasks below when you want the agent to check something periodically.
 
+## 2026-03-13 할 일
+- [ ] 블로그 복구: Oracle에 BLOG_POST 등 테이블 생성 → blog-api/blog-front 재시작 (webserver01/02)
+- [ ] MCP Oracle 서버 디버깅: Claude Desktop 핸드셰이크 disconnected 문제 해결
+- [ ] Oracle DBA 스크립트 채워넣기 (oracle-scripts/)
+
 ## TODO
 - [x] 동행복권 자동 구매 스크립트 개발 (완료 2026-03-05)
 - [x] 동행복권 매주 자동 구매 cron 등록 (완료: `0 10 * * 5`, 매주 금요일 10시)
