@@ -71,6 +71,10 @@
 - 모의투자 API 키 발급 완료 (2026-03-11)
 - 모의투자 계좌: 50173951 (ACNT_PRDT_CD: 01)
 - 모의투자 자동매매 연동 완료: signal.py → kis_mock_trader.py → KIS 모의투자 API
+- 포트폴리오 변경 (2026-03-12): 5종→3종 (KODEX레버리지/ACE200/KODEX고배당, 균등33%)
+- 투자자별 매매동향: kis_investor.py (cron 평일 16:10), TB_INVESTOR_TREND
+- signal.py 외국인 필터: 5일 중 3일+ 순매도 시 매수 보류
+- KODEX 고배당 1차 분할매수: 47주 @ 17,545 (모의투자, 2026-03-12)
 - etf_redis_realtime.py: 시뮬레이션→실제 KIS API 전환 완료, RedisCluster 클라이언트 적용
 - crontab/shebang: 모든 stock 스크립트 /home/anaconda3/bin/python3 절대경로로 수정
 - 교훈: cron 환경에서 #!/usr/bin/env python3은 PATH 문제로 실패 → 절대경로 필수
@@ -81,6 +85,18 @@
 ## 서버 프롬프트 컬러 (2026-03-11)
 - kto2005=🟢초록, oracle=🟡노랑, grid=🔵시안, root=🔴빨강
 - RHEL9/OL9: crypto-policies가 ssh-rsa(SHA1) 차단 → ed25519 키 필요
+
+## webserver01/02
+- blog-api(Fastify) + blog-front(Next.js): PM2 관리, systemd도 있음
+- 2026-03-12: DB 다운 시 무한 재시작 폭주 → PM2 delete + systemd disable로 정리
+- BLOG_POST 등 테이블 미존재 — 블로그 재개 시 먼저 생성 필요
+- 재시작 폭주가 RAC CPU 상승 + ORA-609 원인이었음
+
+## OGG RAC 교훈 (2026-03-12)
+- Heavy swapping → 인스턴스 eviction: 16GB RAM에 DB+ASM+CRS+TFA 과부하
+- TFA 혼자 700MB+ RSS: tfactl stop + systemctl disable 필요
+- UNDO 충돌: 인스턴스가 다른 노드에서 올라오면 undo_tablespace 재배정 필요
+- DB 다운 한 달+ 방치됨 → 자동 모니터링/알림 필수
 
 ## 교훈
 - 게이트웨이 재시작 시 lock 파일(.gateway.lock) 충돌 주의 — pkill 후 lock 삭제 필요
