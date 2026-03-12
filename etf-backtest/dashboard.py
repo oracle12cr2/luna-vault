@@ -12,8 +12,15 @@ from plotly.subplots import make_subplots
 import yfinance as yf
 import yaml
 from datetime import datetime, timedelta
+import oracledb
 import warnings
 warnings.filterwarnings('ignore')
+
+# Oracle 설정
+ORACLE_USER = "stock"
+ORACLE_PASS = "Oracle2026_em"
+ORACLE_DSN  = "PROD_OGG"
+ORACLE_LIB  = "/usr/lib/oracle/23/client64/lib"
 
 # 페이지 설정
 st.set_page_config(
@@ -560,6 +567,148 @@ def create_grid_drawdown_chart(metrics):
     return fig
 
 
+@st.cache_data(ttl=1800)
+def load_investor_trend(stock_codes: list) -> dict:
+    """Oracle에서 투자자별 매매동향 로드"""
+    try:
+        oracledb.init_oracle_client(lib_dir=ORACLE_LIB)
+    except:
+        pass
+    try:
+        conn = oracledb.connect(user=ORACLE_USER, password=ORACLE_PASS, dsn=ORACLE_DSN)
+        result = {}
+        for code in stock_codes:
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT TRADE_DT, CLOSE_PRICE,
+                       PRSN_NET_VOL, FRGN_NET_VOL, ORGN_NET_VOL,
+                       PRSN_NET_AMT, FRGN_NET_AMT, ORGN_NET_AMT,
+                       PRSN_BUY_VOL, PRSN_SELL_VOL,
+                       FRGN_BUY_VOL, FRGN_SELL_VOL,
+                       ORGN_BUY_VOL, ORGN_SELL_VOL
+                  FROM stock.TB_INVESTOR_TREND
+                 WHERE STOCK_CODE = :1
+                 ORDER BY TRADE_DT
+            """, [code])
+            rows = cur.fetchall()
+            cur.close()
+            if rows:
+                df = pd.DataFrame(rows, columns=[
+                    'date', 'close', 'prsn_net', 'frgn_net', 'orgn_net',
+                    'prsn_amt', 'frgn_amt', 'orgn_amt',
+                    'prsn_buy', 'prsn_sell', 'frgn_buy', 'frgn_sell',
+                    'orgn_buy', 'orgn_sell'
+                ])
+                df['date'] = pd.to_datetime(df['date'])
+                df = df.set_index('date')
+                for col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+                result[code] = df
+        conn.close()
+        return result
+    except Exception as e:
+        st.warning(f"Oracle 연결 실패: {e}")
+        return {}
+
+
+def create_investor_net_chart(df, title):
+    """투자자별 순매수량 바 차트"""
+    fig = go.Figure()
+    
+    fig.add_trace(go.Bar(
+        x=df.index, y=df['prsn_net'],
+        name='개인', marker_color='#ff7f0e', opacity=0.8
+    ))
+    fig.add_trace(go.Bar(
+        x=df.index, y=df['frgn_net'],
+        name='외국인', marker_color='#2ca02c', opacity=0.8
+    ))
+    fig.add_trace(go.Bar(
+        x=df.index, y=df['orgn_net'],
+        name='기관', marker_color='#1f77b4', opacity=0.8
+    ))
+    
+    fig.update_layout(
+        title=f'{title} — 투자자별 순매수량',
+        xaxis_title='날짜', yaxis_title='순매수량 (주)',
+        barmode='group', height=400,
+        hovermode='x unified',
+        yaxis_tickformat=',',
+        legend=dict(orientation='h', y=1.05)
+    )
+    return fig
+
+
+def create_investor_cumulative_chart(df, title):
+    """투자자별 누적 순매수 추이"""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    cum_prsn = df['prsn_net'].cumsum()
+    cum_frgn = df['frgn_net'].cumsum()
+    cum_orgn = df['orgn_net'].cumsum()
+    
+    fig.add_trace(go.Scatter(
+        x=df.index, y=cum_prsn,
+        name='개인 누적', line=dict(color='#ff7f0e', width=2)
+    ), secondary_y=False)
+    fig.add_trace(go.Scatter(
+        x=df.index, y=cum_frgn,
+        name='외국인 누적', line=dict(color='#2ca02c', width=2)
+    ), secondary_y=False)
+    fig.add_trace(go.Scatter(
+        x=df.index, y=cum_orgn,
+        name='기관 누적', line=dict(color='#1f77b4', width=2)
+    ), secondary_y=False)
+    
+    # 주가 오버레이
+    fig.add_trace(go.Scatter(
+        x=df.index, y=df['close'],
+        name='종가', line=dict(color='gray', width=1, dash='dot')
+    ), secondary_y=True)
+    
+    fig.update_layout(
+        title=f'{title} — 누적 순매수 vs 주가',
+        height=400, hovermode='x unified',
+        legend=dict(orientation='h', y=1.08)
+    )
+    fig.update_yaxes(title_text='누적 순매수량 (주)', tickformat=',', secondary_y=False)
+    fig.update_yaxes(title_text='종가 (원)', tickformat=',', secondary_y=True)
+    return fig
+
+
+def create_investor_buysell_chart(df, title):
+    """매수/매도 비율 차트 (외국인+기관 합산)"""
+    fig = make_subplots(rows=1, cols=2, subplot_titles=['외국인', '기관'])
+    
+    # 외국인
+    fig.add_trace(go.Bar(
+        x=df.index, y=df['frgn_buy'], name='외국인 매수',
+        marker_color='rgba(44,160,44,0.7)'
+    ), row=1, col=1)
+    fig.add_trace(go.Bar(
+        x=df.index, y=-df['frgn_sell'], name='외국인 매도',
+        marker_color='rgba(214,39,40,0.7)'
+    ), row=1, col=1)
+    
+    # 기관
+    fig.add_trace(go.Bar(
+        x=df.index, y=df['orgn_buy'], name='기관 매수',
+        marker_color='rgba(31,119,180,0.7)'
+    ), row=1, col=2)
+    fig.add_trace(go.Bar(
+        x=df.index, y=-df['orgn_sell'], name='기관 매도',
+        marker_color='rgba(255,127,14,0.7)'
+    ), row=1, col=2)
+    
+    fig.update_layout(
+        title=f'{title} — 외국인/기관 매수·매도량',
+        height=350, hovermode='x unified', barmode='overlay',
+        showlegend=False
+    )
+    fig.update_yaxes(tickformat=',')
+    return fig
+
+
 def create_price_charts(data_dict, selected_etfs):
     """ETF 가격 차트"""
     fig = make_subplots(
@@ -882,6 +1031,76 @@ def main():
             for k, v in config['data']['etfs'].items()
         ])
         st.dataframe(etf_df, use_container_width=True)
+    
+    # ========== 투자자별 매매동향 (항상 표시) ==========
+    st.markdown("---")
+    st.markdown("## 👥 투자자별 매매동향")
+    
+    # yfinance 심볼 → 종목코드 매핑
+    symbol_to_code = {}
+    code_to_name = {}
+    for key, symbol in config['data']['etfs'].items():
+        code = symbol.replace('.KS', '').replace('.KQ', '')
+        symbol_to_code[key] = code
+        code_to_name[code] = etf_names.get(key, key)
+    
+    stock_codes = list(symbol_to_code.values())
+    investor_data = load_investor_trend(stock_codes)
+    
+    if investor_data:
+        for code, df in investor_data.items():
+            name = code_to_name.get(code, code)
+            
+            with st.expander(f"📊 {name} ({code})", expanded=(len(investor_data) <= 3)):
+                # 최근 5일 요약 테이블
+                recent = df.tail(5).copy()
+                recent_display = pd.DataFrame({
+                    '날짜': recent.index.strftime('%m/%d'),
+                    '종가': recent['close'].apply(lambda x: f"{x:,.0f}"),
+                    '개인': recent['prsn_net'].apply(lambda x: f"{x:+,.0f}"),
+                    '외국인': recent['frgn_net'].apply(lambda x: f"{x:+,.0f}"),
+                    '기관': recent['orgn_net'].apply(lambda x: f"{x:+,.0f}"),
+                }).reset_index(drop=True)
+                
+                # 최근 요약 메트릭
+                last = df.iloc[-1]
+                c1, c2, c3, c4 = st.columns(4)
+                with c1:
+                    st.metric("종가", f"{last['close']:,.0f}원")
+                with c2:
+                    v = last['prsn_net']
+                    st.metric("개인", f"{v:+,.0f}", delta=f"{'매수' if v > 0 else '매도'}")
+                with c3:
+                    v = last['frgn_net']
+                    st.metric("외국인", f"{v:+,.0f}", delta=f"{'매수' if v > 0 else '매도'}")
+                with c4:
+                    v = last['orgn_net']
+                    st.metric("기관", f"{v:+,.0f}", delta=f"{'매수' if v > 0 else '매도'}")
+                
+                # 차트
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.plotly_chart(
+                        create_investor_net_chart(df, name),
+                        use_container_width=True
+                    )
+                with col2:
+                    st.plotly_chart(
+                        create_investor_cumulative_chart(df, name),
+                        use_container_width=True
+                    )
+                
+                # 매수/매도량 비교
+                st.plotly_chart(
+                    create_investor_buysell_chart(df, name),
+                    use_container_width=True
+                )
+                
+                # 최근 5일 테이블
+                st.markdown("**최근 5일 순매수량**")
+                st.dataframe(recent_display, use_container_width=True, hide_index=True)
+    else:
+        st.info("투자자 데이터가 없습니다. kis_investor.py를 실행해주세요.")
 
 if __name__ == "__main__":
     main()
