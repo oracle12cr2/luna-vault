@@ -1032,6 +1032,66 @@ def main():
         ])
         st.dataframe(etf_df, use_container_width=True)
     
+    # ========== 시장 공포지표 ==========
+    st.markdown("---")
+    st.markdown("## 🌍 시장 공포지표")
+    
+    try:
+        try:
+            oracledb.init_oracle_client(lib_dir=ORACLE_LIB)
+        except:
+            pass
+        fear_conn = oracledb.connect(user=ORACLE_USER, password=ORACLE_PASS, dsn=ORACLE_DSN)
+        fear_cur = fear_conn.cursor()
+        fear_cur.execute("""
+            SELECT TRADE_DT, VIX, VIX_CHG, WTI, WTI_CHG, GOLD, GOLD_CHG,
+                   USDKRW, USDKRW_CHG, SP500, SP500_CHG, KOSPI, KOSPI_CHG, FEAR_LEVEL
+              FROM stock.TB_MARKET_FEAR
+             ORDER BY TRADE_DT DESC
+             FETCH FIRST 30 ROWS ONLY
+        """)
+        fear_rows = fear_cur.fetchall()
+        fear_cur.close()
+        fear_conn.close()
+        
+        if fear_rows:
+            latest = fear_rows[0]
+            fear_level = latest[13]
+            fear_icon = {"PANIC": "🚨", "FEAR": "😨", "CAUTION": "⚠️", "NORMAL": "🟢"}.get(fear_level, "❓")
+            
+            fc1, fc2, fc3, fc4, fc5 = st.columns(5)
+            with fc1:
+                st.metric(f"{fear_icon} 공포수준", fear_level)
+            with fc2:
+                st.metric("VIX", f"{float(latest[1]):.1f}", delta=f"{float(latest[2]):+.1f}%")
+            with fc3:
+                st.metric("WTI", f"${float(latest[3]):.1f}", delta=f"{float(latest[4]):+.1f}%")
+            with fc4:
+                st.metric("환율", f"{float(latest[7]):,.0f}원", delta=f"{float(latest[8]):+.1f}%")
+            with fc5:
+                st.metric("금", f"${float(latest[5]):,.0f}", delta=f"{float(latest[6]):+.1f}%")
+            
+            # 추이 차트
+            if len(fear_rows) >= 3:
+                fear_df = pd.DataFrame(fear_rows, columns=[
+                    'dt','vix','vix_chg','wti','wti_chg','gold','gold_chg',
+                    'usdkrw','usdkrw_chg','sp500','sp500_chg','kospi','kospi_chg','level'
+                ])
+                fear_df['dt'] = pd.to_datetime(fear_df['dt'], format='%Y%m%d')
+                for col in ['vix','wti','gold','usdkrw']:
+                    fear_df[col] = pd.to_numeric(fear_df[col], errors='coerce')
+                fear_df = fear_df.sort_values('dt')
+                
+                fig_fear = make_subplots(rows=2, cols=2, subplot_titles=['VIX', 'WTI (원유)', '환율 (USD/KRW)', '금 (Gold)'])
+                fig_fear.add_trace(go.Scatter(x=fear_df['dt'], y=fear_df['vix'], name='VIX', line=dict(color='red', width=2)), row=1, col=1)
+                fig_fear.add_trace(go.Scatter(x=fear_df['dt'], y=fear_df['wti'], name='WTI', line=dict(color='brown', width=2)), row=1, col=2)
+                fig_fear.add_trace(go.Scatter(x=fear_df['dt'], y=fear_df['usdkrw'], name='USD/KRW', line=dict(color='blue', width=2)), row=2, col=1)
+                fig_fear.add_trace(go.Scatter(x=fear_df['dt'], y=fear_df['gold'], name='Gold', line=dict(color='gold', width=2)), row=2, col=2)
+                fig_fear.update_layout(height=400, showlegend=False, hovermode='x unified')
+                st.plotly_chart(fig_fear, use_container_width=True)
+    except Exception as e:
+        st.info(f"공포지표 로드 실패: {e}")
+    
     # ========== 투자자별 매매동향 (항상 표시) ==========
     st.markdown("---")
     st.markdown("## 👥 투자자별 매매동향")
