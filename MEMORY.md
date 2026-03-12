@@ -68,11 +68,22 @@
 - 디스코드 알림: #etf-signals 채널 (Luna 서버)
 - 스크립트: /usr/local/bin/kis_realtime.py, kis_candle.py, dart_*.py, etf_redis_realtime.py
 - 리포트: etf-backtest/reports/ (optimize_report.html, walkforward_report.html)
-- 다음 단계: 모의투자 API 키 발급, 종목별 전략 자동매매 연결
+- 모의투자 API 키 발급 완료 (2026-03-11)
+- 모의투자 계좌: 50173951 (ACNT_PRDT_CD: 01)
+- 모의투자 자동매매 연동 완료: signal.py → kis_mock_trader.py → KIS 모의투자 API
+- etf_redis_realtime.py: 시뮬레이션→실제 KIS API 전환 완료, RedisCluster 클라이언트 적용
+- crontab/shebang: 모든 stock 스크립트 /home/anaconda3/bin/python3 절대경로로 수정
+- 교훈: cron 환경에서 #!/usr/bin/env python3은 PATH 문제로 실패 → 절대경로 필수
 
 ## 도구
 - youtube-transcript-api로 유튜브 자막 추출 가능 (pip install youtube-transcript-api)
 
+## 서버 프롬프트 컬러 (2026-03-11)
+- kto2005=🟢초록, oracle=🟡노랑, grid=🔵시안, root=🔴빨강
+- RHEL9/OL9: crypto-policies가 ssh-rsa(SHA1) 차단 → ed25519 키 필요
+
 ## 교훈
 - 게이트웨이 재시작 시 lock 파일(.gateway.lock) 충돌 주의 — pkill 후 lock 삭제 필요
 - plugins.entries.telegram.enabled: false 확인 필요 — 텔레그램 채널과 별개 설정일 수 있음
+- ORA-27366 `"".""`(빈 job 이름): scheduler 내부 유령 running 엔트리 → sys.scheduler$_job 직접 UPDATE로 정리
+- RHEL9/OL9 SSH: crypto-policies가 ssh-rsa 차단, ed25519 키 사용

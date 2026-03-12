@@ -6,24 +6,20 @@ data:
   start_date: "2020-01-01"
   end_date: "2023-12-31"
   
-  # 핵심 5종 포트폴리오 (930만원)
-  # 전 종목 워크포워드 PASS 확인 (IS: 2023~2024, OOS: 2025~현재)
+  # 핵심 3종 포트폴리오 (1000만원, 균등 33%)
+  # 워크포워드 검증 OOS 수익률 + 샤프 상위 3종목
   etfs:
-    ace200: "102110.KS"                # 1. ACE 200 (시장 대표) - 30%
-    kodex_leverage: "122630.KS"        # 2. KODEX 레버리지 (공격형) - 15%
-    tiger_semi: "091230.KS"            # 3. TIGER 반도체 (성장 섹터) - 25%
-    kodex_dividend: "279530.KS"        # 4. KODEX 고배당 (안정+배당) - 15%
-    kodex_gold: "132030.KS"            # 5. KODEX 골드선물(H) (헤지) - 15%
+    kodex_leverage: "122630.KS"        # 1. KODEX 레버리지 (공격형) - 33%
+    ace200: "102110.KS"                # 2. ACE 200 (시장 대표) - 33%
+    kodex_dividend: "279530.KS"        # 3. KODEX 고배당 (안정+배당) - 33%
 
   weights:
-    ace200: 0.30
-    kodex_leverage: 0.15
-    tiger_semi: 0.25
-    kodex_dividend: 0.15
-    kodex_gold: 0.15
+    kodex_leverage: 0.333
+    ace200: 0.333
+    kodex_dividend: 0.334
 
 backtest:
-  initial_cash: 9300000   # 930만원
+  initial_cash: 10000000  # 1000만원
   commission: 0.00015     # 수수료 0.015%
   slippage: 0.0002        # 슬리피지 0.02%
 

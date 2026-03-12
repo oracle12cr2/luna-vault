@@ -623,7 +623,7 @@ def main():
     selected_etfs = st.sidebar.multiselect(
         "ETF 선택",
         options=etf_options,
-        default=etf_options[:3],
+        default=etf_options,  # 전체 선택 (config에 있는 종목만)
         format_func=lambda x: etf_names.get(x, x)
     )
     

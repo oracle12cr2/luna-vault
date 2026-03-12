@@ -56,3 +56,7 @@ success
 [2026-03-09 09:00:04] 메일 발송 완료 (경고: 0건) -> kto2004@naver.com
 /root/.openclaw/workspace/scripts/tbs_monitor.sh: 줄 105: sendmail: 명령어를 찾을 수 없음
 [2026-03-10 09:00:27] 메일 발송 완료 (경고: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/tbs_monitor.sh: 줄 105: sendmail: 명령어를 찾을 수 없음
+[2026-03-11 09:01:28] 메일 발송 완료 (경고: 0건) -> kto2004@naver.com
+/root/.openclaw/workspace/scripts/tbs_monitor.sh: 줄 105: sendmail: 명령어를 찾을 수 없음
+[2026-03-12 09:00:38] 메일 발송 완료 (경고: 0건) -> kto2004@naver.com
