@@ -160,14 +160,20 @@ def calculate_grid_strategy(data, grid_pct=5, sell_pct=10, buy_pct=10, ma_period
     
     cash = initial_cash
     holdings = 0  # 보유 수량
-    total_invested = 0
     
     # 초기 매수 (50% 투자)
     initial_buy_amount = initial_cash * 0.5
     
     portfolio_values = []
+    cash_values = []
+    stock_values = []
     signals_list = []
     trade_log = []
+    
+    # 매수후보유 벤치마크
+    bnh_shares = 0
+    bnh_initialized = False
+    bnh_values = []
     
     for i in range(len(df)):
         price = float(df['Close'].iloc[i])
@@ -175,8 +181,18 @@ def calculate_grid_strategy(data, grid_pct=5, sell_pct=10, buy_pct=10, ma_period
         
         if pd.isna(df['MA'].iloc[i]):
             portfolio_values.append(cash + holdings * price)
+            cash_values.append(cash)
+            stock_values.append(holdings * price)
             signals_list.append(0)
+            # 매수후보유: 아직 이평선 미형성
+            bnh_values.append(initial_cash)
             continue
+        
+        # 매수후보유 벤치마크 초기화 (이평선 형성 시점에 전액 매수)
+        if not bnh_initialized:
+            bnh_shares = int(initial_cash / price)
+            bnh_initialized = True
+        bnh_values.append(bnh_shares * price + (initial_cash - bnh_shares * price))
         
         deviation = float(df['Deviation'].iloc[i])
         
@@ -187,7 +203,7 @@ def calculate_grid_strategy(data, grid_pct=5, sell_pct=10, buy_pct=10, ma_period
                 cost = buy_qty * price
                 cash -= cost
                 holdings += buy_qty
-                trade_log.append({'date': date, 'action': '초기매수', 'price': price, 'qty': buy_qty, 'cash': cash})
+                trade_log.append({'date': date, 'action': '초기매수', 'price': price, 'qty': buy_qty, 'amount': cost, 'cash': cash, 'holdings': holdings})
         
         # 오름세: 이평선 대비 grid_pct% 이상 → 보유량의 sell_pct% 매도 (수익실현)
         elif deviation >= grid_pct and holdings > 0:
@@ -196,7 +212,7 @@ def calculate_grid_strategy(data, grid_pct=5, sell_pct=10, buy_pct=10, ma_period
                 revenue = sell_qty * price * (1 - 0.0015)  # 수수료 차감
                 cash += revenue
                 holdings -= sell_qty
-                trade_log.append({'date': date, 'action': '수익실현', 'price': price, 'qty': -sell_qty, 'cash': cash})
+                trade_log.append({'date': date, 'action': '수익실현', 'price': price, 'qty': -sell_qty, 'amount': revenue, 'cash': cash, 'holdings': holdings})
         
         # 내림세: 이평선 대비 -grid_pct% 이하 → 현금의 buy_pct% 분할매수
         elif deviation <= -grid_pct and cash > 0:
@@ -207,19 +223,23 @@ def calculate_grid_strategy(data, grid_pct=5, sell_pct=10, buy_pct=10, ma_period
                 if cost <= cash:
                     cash -= cost
                     holdings += buy_qty
-                    trade_log.append({'date': date, 'action': '분할매수', 'price': price, 'qty': buy_qty, 'cash': cash})
+                    trade_log.append({'date': date, 'action': '분할매수', 'price': price, 'qty': buy_qty, 'amount': cost, 'cash': cash, 'holdings': holdings})
         
         portfolio_value = cash + holdings * price
         portfolio_values.append(portfolio_value)
+        cash_values.append(cash)
+        stock_values.append(holdings * price)
         signals_list.append(1 if holdings > 0 else 0)
     
     df['Portfolio_Value'] = portfolio_values
+    df['Cash_Value'] = cash_values
+    df['Stock_Value'] = stock_values
+    df['BnH_Value'] = bnh_values
     df['Signal'] = signals_list
-    df['Trade_Log'] = None
     
     return df, trade_log, portfolio_values
 
-def calculate_grid_metrics(portfolio_values, initial_cash, index):
+def calculate_grid_metrics(portfolio_values, initial_cash, index, bnh_values=None):
     """분할매매 전략 지표 계산"""
     pv = pd.Series(portfolio_values, index=index)
     
@@ -243,8 +263,20 @@ def calculate_grid_metrics(portfolio_values, initial_cash, index):
     # 누적 수익률 (정규화)
     cumulative_returns = pv / initial_cash
     
-    # 벤치마크 (없음, 자체 비교)
-    benchmark_cumulative = cumulative_returns.copy()
+    # 매수후보유 벤치마크
+    if bnh_values is not None:
+        bnh = pd.Series(bnh_values, index=index)
+        benchmark_cumulative = bnh / initial_cash
+        benchmark_total = float((bnh.iloc[-1] / initial_cash) - 1)
+        benchmark_annual = float((1 + benchmark_total) ** (1/years) - 1) if years > 0 else 0
+        # 벤치마크 드로다운
+        bnh_peak = bnh.cummax()
+        bnh_drawdown = (bnh - bnh_peak) / bnh_peak
+    else:
+        benchmark_cumulative = cumulative_returns.copy()
+        benchmark_total = total_return
+        benchmark_annual = annual_return
+        bnh_drawdown = drawdown.copy()
     
     return {
         'total_return': total_return,
@@ -255,11 +287,13 @@ def calculate_grid_metrics(portfolio_values, initial_cash, index):
         'cumulative_returns': cumulative_returns,
         'portfolio_returns': daily_returns,
         'drawdown': drawdown,
-        'benchmark_total': 0,
-        'benchmark_annual': 0,
+        'benchmark_total': benchmark_total,
+        'benchmark_annual': benchmark_annual,
         'benchmark_cumulative': benchmark_cumulative,
+        'benchmark_drawdown': bnh_drawdown,
         'final_value': float(pv.iloc[-1]),
         'profit': float(pv.iloc[-1] - initial_cash),
+        'excess_return': total_return - benchmark_total if bnh_values is not None else 0,
     }
 
 def calculate_backtest_metrics(price_data, signals, initial_cash=10000000, commission=0.0015):
@@ -384,6 +418,147 @@ def create_drawdown_chart(metrics):
     )
     
     return fig
+
+def create_grid_price_chart(grid_data, trade_log, etf_name):
+    """분할매매 가격 차트 + 매매 마커 + 이동평균"""
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        vertical_spacing=0.08,
+                        row_heights=[0.7, 0.3],
+                        subplot_titles=[f'{etf_name} 가격 & 매매 시점', '이격도 (%)'])
+    
+    # 가격 라인
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['Close'],
+        name='종가', line=dict(color='#1f77b4', width=1.5)
+    ), row=1, col=1)
+    
+    # 이동평균
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['MA'],
+        name='이동평균', line=dict(color='orange', width=1, dash='dash')
+    ), row=1, col=1)
+    
+    # 매수 마커
+    buys = [t for t in trade_log if t['qty'] > 0]
+    if buys:
+        fig.add_trace(go.Scatter(
+            x=[t['date'] for t in buys],
+            y=[t['price'] for t in buys],
+            mode='markers',
+            name='매수',
+            marker=dict(symbol='triangle-up', size=12, color='#2ca02c', line=dict(width=1, color='darkgreen')),
+            text=[f"{t['action']}<br>{t['qty']}주 @ {t['price']:,.0f}" for t in buys],
+            hovertemplate='%{text}<extra></extra>'
+        ), row=1, col=1)
+    
+    # 매도 마커
+    sells = [t for t in trade_log if t['qty'] < 0]
+    if sells:
+        fig.add_trace(go.Scatter(
+            x=[t['date'] for t in sells],
+            y=[t['price'] for t in sells],
+            mode='markers',
+            name='매도',
+            marker=dict(symbol='triangle-down', size=12, color='#d62728', line=dict(width=1, color='darkred')),
+            text=[f"{t['action']}<br>{abs(t['qty'])}주 @ {t['price']:,.0f}" for t in sells],
+            hovertemplate='%{text}<extra></extra>'
+        ), row=1, col=1)
+    
+    # 이격도 차트
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['Deviation'],
+        name='이격도', line=dict(color='purple', width=1),
+        fill='tozeroy', fillcolor='rgba(128,0,128,0.1)'
+    ), row=2, col=1)
+    fig.add_hline(y=0, line_dash="dash", line_color="gray", row=2, col=1)
+    
+    fig.update_layout(height=600, hovermode='x unified', legend=dict(orientation='h', y=1.05))
+    return fig
+
+
+def create_grid_portfolio_chart(grid_data, initial_cash):
+    """분할매매 포트폴리오 가치 vs 매수후보유 비교"""
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['Portfolio_Value'],
+        name='분할매매 포트폴리오',
+        line=dict(color='#2ca02c', width=2)
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['BnH_Value'],
+        name='매수후보유 (벤치마크)',
+        line=dict(color='gray', width=1.5, dash='dash')
+    ))
+    
+    fig.add_hline(y=initial_cash, line_dash="dot", line_color="red",
+                  annotation_text=f"초기 투자금 {initial_cash/10000:,.0f}만원")
+    
+    fig.update_layout(
+        title='포트폴리오 가치 비교',
+        xaxis_title='날짜', yaxis_title='평가금액 (원)',
+        hovermode='x unified', height=400,
+        yaxis_tickformat=',',
+        legend=dict(orientation='h', y=1.05)
+    )
+    return fig
+
+
+def create_grid_allocation_chart(grid_data):
+    """현금 vs 주식 자산 구성 변화 (영역 차트)"""
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['Stock_Value'],
+        name='주식 평가액', stackgroup='one',
+        line=dict(width=0), fillcolor='rgba(31,119,180,0.6)'
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=grid_data.index, y=grid_data['Cash_Value'],
+        name='현금', stackgroup='one',
+        line=dict(width=0), fillcolor='rgba(44,160,44,0.4)'
+    ))
+    
+    fig.update_layout(
+        title='자산 구성 변화 (현금 vs 주식)',
+        xaxis_title='날짜', yaxis_title='금액 (원)',
+        hovermode='x unified', height=400,
+        yaxis_tickformat=',',
+        legend=dict(orientation='h', y=1.05)
+    )
+    return fig
+
+
+def create_grid_drawdown_chart(metrics):
+    """분할매매 vs 매수후보유 드로다운 비교"""
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=metrics['drawdown'].index, y=metrics['drawdown'] * 100,
+        name='분할매매 드로다운',
+        fill='tozeroy', fillcolor='rgba(214,39,40,0.2)',
+        line=dict(color='#d62728', width=1.5)
+    ))
+    
+    if 'benchmark_drawdown' in metrics:
+        fig.add_trace(go.Scatter(
+            x=metrics['benchmark_drawdown'].index, y=metrics['benchmark_drawdown'] * 100,
+            name='매수후보유 드로다운',
+            line=dict(color='gray', width=1, dash='dash')
+        ))
+    
+    fig.add_hline(y=0, line_dash="dash", line_color="gray")
+    
+    fig.update_layout(
+        title='드로다운 비교 (분할매매 vs 매수후보유)',
+        xaxis_title='날짜', yaxis_title='드로다운 (%)',
+        hovermode='x unified', height=350,
+        legend=dict(orientation='h', y=1.05)
+    )
+    return fig
+
 
 def create_price_charts(data_dict, selected_etfs):
     """ETF 가격 차트"""
@@ -530,8 +705,10 @@ def main():
                 grid_data, trade_log, pv = calculate_grid_strategy(
                     etf_data, grid_pct, grid_sell_pct, grid_buy_pct, grid_ma, initial_cash
                 )
-                metrics = calculate_grid_metrics(pv, initial_cash, etf_data.index)
+                bnh_values = grid_data['BnH_Value'].tolist()
+                metrics = calculate_grid_metrics(pv, initial_cash, etf_data.index, bnh_values)
                 metrics['trade_log'] = trade_log
+                metrics['grid_data'] = grid_data
                 results[etf_name] = metrics
                 continue
             elif strategy == "이동평균 크로스":
@@ -560,9 +737,84 @@ def main():
         # 결과 표시
         st.markdown("## 📊 백테스트 결과")
         
-        # 핵심 지표 카드
-        if results:
-            # 포트폴리오 통합 (단순 평균)
+        if not results:
+            st.warning("결과가 없습니다.")
+            return
+        
+        # ========== 분할매매 전용 UI ==========
+        if strategy == "분할매매 (추천)":
+            for etf_name, metrics in results.items():
+                st.markdown(f"### 🏷️ {etf_names.get(etf_name, etf_name)}")
+                
+                # 핵심 지표 카드 (6개)
+                c1, c2, c3, c4, c5, c6 = st.columns(6)
+                with c1:
+                    st.metric("최종 평가금",
+                              f"{metrics['final_value']/10000:,.0f}만원")
+                with c2:
+                    color = "🔴" if metrics['profit'] < 0 else "🟢"
+                    st.metric("수익금",
+                              f"{color} {metrics['profit']/10000:,.0f}만원")
+                with c3:
+                    st.metric("총 수익률",
+                              f"{metrics['total_return']*100:.1f}%",
+                              delta=f"BnH 대비 {metrics.get('excess_return',0)*100:+.1f}%")
+                with c4:
+                    st.metric("연환산 수익률",
+                              f"{metrics['annual_return']*100:.1f}%")
+                with c5:
+                    st.metric("샤프 비율", f"{metrics['sharpe_ratio']:.2f}")
+                with c6:
+                    st.metric("최대 드로다운",
+                              f"{metrics['max_drawdown']*100:.1f}%")
+                
+                st.markdown("---")
+                grid_data = metrics.get('grid_data')
+                trade_log = metrics.get('trade_log', [])
+                
+                if grid_data is not None:
+                    # 1) 가격 차트 + 매매 마커
+                    st.plotly_chart(
+                        create_grid_price_chart(grid_data, trade_log, etf_names.get(etf_name, etf_name)),
+                        use_container_width=True
+                    )
+                    
+                    # 2) 포트폴리오 가치 vs 매수후보유
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.plotly_chart(
+                            create_grid_portfolio_chart(grid_data, initial_cash),
+                            use_container_width=True
+                        )
+                    with col2:
+                        st.plotly_chart(
+                            create_grid_allocation_chart(grid_data),
+                            use_container_width=True
+                        )
+                    
+                    # 3) 드로다운 비교
+                    st.plotly_chart(
+                        create_grid_drawdown_chart(metrics),
+                        use_container_width=True
+                    )
+                
+                # 4) 거래 내역 테이블
+                if trade_log:
+                    st.markdown("#### 📋 거래 내역")
+                    trade_df = pd.DataFrame(trade_log)
+                    trade_df['date'] = pd.to_datetime(trade_df['date']).dt.strftime('%Y-%m-%d')
+                    trade_df['price'] = trade_df['price'].apply(lambda x: f"{x:,.0f}")
+                    trade_df['amount'] = trade_df['amount'].apply(lambda x: f"{x:,.0f}")
+                    trade_df['cash'] = trade_df['cash'].apply(lambda x: f"{x:,.0f}")
+                    trade_df.columns = ['날짜', '구분', '가격', '수량', '금액', '잔여현금', '보유수량']
+                    st.dataframe(trade_df, use_container_width=True, height=min(400, 35 * len(trade_df) + 38))
+                    st.caption(f"총 거래 횟수: {len(trade_log)}회 (매수 {len([t for t in trade_log if t['qty'] > 0])}회, 매도 {len([t for t in trade_log if t['qty'] < 0])}회)")
+                
+                st.markdown("---")
+        
+        # ========== 기타 전략 UI (기존 코드) ==========
+        else:
+            # 핵심 지표 카드
             total_returns = [r['total_return'] for r in results.values()]
             annual_returns = [r['annual_return'] for r in results.values()]
             sharpe_ratios = [r['sharpe_ratio'] for r in results.values()]
@@ -575,89 +827,50 @@ def main():
             avg_max_dd = np.mean(max_drawdowns) * 100
             avg_win_rate = np.mean(win_rates)
             
-            # 메트릭 표시
             col1, col2, col3, col4, col5 = st.columns(5)
-            
             with col1:
-                st.metric(
-                    "총 수익률",
-                    f"{avg_total_return:.1f}%",
-                    delta=f"{avg_total_return:.1f}%"
-                )
-                
+                st.metric("총 수익률", f"{avg_total_return:.1f}%", delta=f"{avg_total_return:.1f}%")
             with col2:
-                st.metric(
-                    "연환산 수익률",
-                    f"{avg_annual_return:.1f}%",
-                    delta=f"{avg_annual_return:.1f}%"
-                )
-                
+                st.metric("연환산 수익률", f"{avg_annual_return:.1f}%", delta=f"{avg_annual_return:.1f}%")
             with col3:
-                st.metric(
-                    "샤프 비율",
-                    f"{avg_sharpe:.2f}",
-                    delta=f"{avg_sharpe:.2f}"
-                )
-                
+                st.metric("샤프 비율", f"{avg_sharpe:.2f}", delta=f"{avg_sharpe:.2f}")
             with col4:
-                st.metric(
-                    "최대 드로다운",
-                    f"{avg_max_dd:.1f}%",
-                    delta=f"{avg_max_dd:.1f}%"
-                )
-                
+                st.metric("최대 드로다운", f"{avg_max_dd:.1f}%", delta=f"{avg_max_dd:.1f}%")
             with col5:
-                st.metric(
-                    "승률",
-                    f"{avg_win_rate:.1f}%",
-                    delta=f"{avg_win_rate:.1f}%"
-                )
-        
-        # 차트 섹션
-        if results:
-            # 첫 번째 ETF 결과로 차트 생성 (대표)
+                st.metric("승률", f"{avg_win_rate:.1f}%", delta=f"{avg_win_rate:.1f}%")
+            
+            # 차트 섹션
             first_etf = next(iter(results.keys()))
             first_metrics = results[first_etf]
             
             col1, col2 = st.columns(2)
-            
             with col1:
-                st.plotly_chart(
-                    create_portfolio_chart(first_metrics),
-                    use_container_width=True
-                )
-                
+                st.plotly_chart(create_portfolio_chart(first_metrics), use_container_width=True)
             with col2:
-                st.plotly_chart(
-                    create_drawdown_chart(first_metrics),
-                    use_container_width=True
-                )
-        
-        # ETF별 상세 결과
-        st.markdown("### 📈 ETF별 상세 결과")
-        for etf_name, metrics in results.items():
-            with st.expander(f"🔍 {etf_names.get(etf_name, etf_name)} 상세 분석"):
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    st.metric("총 수익률", f"{metrics['total_return']*100:.1f}%")
-                    st.metric("샤프 비율", f"{metrics['sharpe_ratio']:.2f}")
-                    
-                with col2:
-                    st.metric("연환산 수익률", f"{metrics['annual_return']*100:.1f}%")
-                    st.metric("최대 드로다운", f"{metrics['max_drawdown']*100:.1f}%")
-                    
-                with col3:
-                    st.metric("벤치마크 대비", f"{(metrics['total_return'] - metrics['benchmark_total'])*100:.1f}%")
-                    st.metric("승률", f"{metrics['win_rate']:.1f}%")
-        
-        # ETF 가격 차트
-        st.markdown("### 💹 ETF 가격 차트")
-        if len(selected_etfs) <= 3:  # 너무 많으면 차트가 복잡해짐
-            price_fig = create_price_charts(data_dict, selected_etfs)
-            st.plotly_chart(price_fig, use_container_width=True)
-        else:
-            st.info("선택된 ETF가 너무 많아 차트를 생략했습니다. (3개 이하 권장)")
+                st.plotly_chart(create_drawdown_chart(first_metrics), use_container_width=True)
+            
+            # ETF별 상세 결과
+            st.markdown("### 📈 ETF별 상세 결과")
+            for etf_name, metrics in results.items():
+                with st.expander(f"🔍 {etf_names.get(etf_name, etf_name)} 상세 분석"):
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("총 수익률", f"{metrics['total_return']*100:.1f}%")
+                        st.metric("샤프 비율", f"{metrics['sharpe_ratio']:.2f}")
+                    with col2:
+                        st.metric("연환산 수익률", f"{metrics['annual_return']*100:.1f}%")
+                        st.metric("최대 드로다운", f"{metrics['max_drawdown']*100:.1f}%")
+                    with col3:
+                        st.metric("벤치마크 대비", f"{(metrics['total_return'] - metrics['benchmark_total'])*100:.1f}%")
+                        st.metric("승률", f"{metrics['win_rate']:.1f}%")
+            
+            # ETF 가격 차트
+            st.markdown("### 💹 ETF 가격 차트")
+            if len(selected_etfs) <= 3:
+                price_fig = create_price_charts(data_dict, selected_etfs)
+                st.plotly_chart(price_fig, use_container_width=True)
+            else:
+                st.info("선택된 ETF가 너무 많아 차트를 생략했습니다. (3개 이하 권장)")
     
     else:
         st.info("👈 사이드바에서 설정을 조정하고 '백테스트 실행' 버튼을 클릭하세요.")
