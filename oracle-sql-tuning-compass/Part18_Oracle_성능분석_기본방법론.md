@@ -84,7 +84,7 @@ flowchart TD
 
 ### 성능 분석 및 튜닝 흐름도
 
-![성능 분석 흐름도](images/part18/01_performance_analysis_flow.jpeg)
+> 📊 **성능 분석 흐름도**: 성능문제 발생 → 성능분석(Dynamic View/AWR/ASH/ADDM) → 성능튜닝 → 적용 및 평가
 
 | 단계 | 설명 |
 |------|------|
@@ -95,7 +95,7 @@ flowchart TD
 
 ### 성능 분석 로드맵
 
-![성능 분석 로드맵](images/part18/02_performance_roadmap.jpeg)
+> 📊 **성능 분석 로드맵**: 성능문제 → DB 기본분석 → 문제위치(DB vs OS) → SQL 분석 → WAIT EVENT → 튜닝 적용
 
 **분석 흐름:**
 1. **성능 문제 발생** → Database 기본 성능 분석
@@ -343,7 +343,7 @@ CPU 사용률 = BUSY_TIME / (IDLE_TIME + BUSY_TIME) * 100
 =======
 ### 1. 시간 모델 — V$SYS_TIME_MODEL
 
-![시간 모델 계층도](images/part18/03_time_model_hierarchy.jpeg)
+> 📊 **시간 모델 계층**: DB_TIME = DB_CPU + Non-Idle Wait Time (계층적 구조로 성능 소비 시간 분석)
 
 **Top Down 형태로 성능 분석하는 시간 통계:**
 
@@ -396,7 +396,7 @@ CPU 사용률 = BUSY_TIME / (IDLE_TIME + BUSY_TIME) * 100
 
 > **DB_TIME = CPU 시간 + 대기 시간**
 
-![WAIT EVENT CLASS](images/part18/04_wait_event_class.jpeg)
+> 📊 **WAIT EVENT CLASS**: User I/O, System I/O, Concurrency, Application, Commit, Network, Configuration, Administrative, Cluster, Other, Idle
 
 | CLASS | 설명 |
 |-------|------|
@@ -491,7 +491,7 @@ CPU 사용률 = BUSY_TIME / (IDLE_TIME + BUSY_TIME)
 
 ### 6. ASH (Active Session History)
 
-![ASH 아키텍처](images/part18/05_ash_architecture.jpeg)
+> 📊 **ASH 아키텍처**: V$SESSION(1초 샘플링) → V$ACTIVE_SESSION_HISTORY(메모리, 순환버퍼) → DBA_HIST_ACTIVE_SESS_HISTORY(디스크, AWR 스냅샷)
 
 - **V$SESSION**에서 **1초 단위**로 정보 Sample 추출 (SQL 사용 안 함)
 - AWR 수집 주기마다 MMON Process에 의해 **1/10 비율로** 디스크 저장
@@ -520,7 +520,7 @@ CPU 사용률 = BUSY_TIME / (IDLE_TIME + BUSY_TIME)
 
 ### 7. AWR (Automatic Workload Repository)
 
-![AWR 아키텍처](images/part18/06_awr_architecture.jpeg)
+> 📊 **AWR 아키텍처**: MMON 프로세스가 주기적(기본 60분)으로 메모리 통계를 SYSAUX Tablespace에 스냅샷 저장 → AWR Report로 분석
 
 - 성능 통계를 **디스크에 주기적으로 저장**하는 서비스
 - MMON Process에 의해 메모리 통계가 디스크로 전송
