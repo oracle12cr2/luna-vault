@@ -4,6 +4,8 @@
 - 한국어 선호, 반말 OK
 - 효율적이고 똑똑한 비서 스타일 원함
 - 첫 세션: 2026-02-13
+- **애플 생태계 우선** — 모든 프로젝트에서 Apple 생태계 고려 (iCloud, CalDAV, Safari, PWA 등)
+- 닉네임 "남궁건"으로 통일 (디스코드 포함)
 
 ## 설정
 - 텔레그램 봇: @ora19cbot
@@ -11,6 +13,28 @@
 - 서버: 2690v4 (Linux, Rocky/RHEL 계열), IP: 192.168.50.56
 - Grafana: 192.168.50.56:3000 (admin/rlaxodhks)
 - SSH 외부 접속: oracle23cr2.asuscomm.com:3000 → 내부 22
+
+## 인프라 IP (192.168.50.x)
+- redis01/02/03: .3/.4/.5
+- waserver01/02: .6/.7
+- kafka: .9
+- webserver01/02: .11/.12
+- haproxy: .14
+- postgres01: .16
+- oracle19c RAC: .21~.29 (SCAN: .27~.29, system/oracle@50.27:1521/PROD)
+- oracle19c OGG RAC: .31~.37 (SCAN: .35~.37, app_user/oracle@50.35:1521/PROD)
+- oracle19c ADG: .41
+- windows: .30
+- 호스트 서버(루나): .56
+- 맥북 에어(유나): .192
+
+## 블로그
+- 도메인: oracle23cr2.asuscomm.com
+- 프론트: Next.js, webserver01/02 이중화, PM2 관리, 포트 3001
+- API: Fastify, 포트 3000
+- DB: Oracle 19c (app_user@50.35:1521/PROD)
+- 디자인: velog/dev.to 스타일 적용 완료 (유나 작업, 2026-03-15)
+- 관리자: admin/admin1234
 
 ## VM 접속 정보
 - kto2005 계정 (SSH 키): redis01~03, waserver01~02, webserver01~02, kafka, haproxy
@@ -78,6 +102,21 @@
 - etf_redis_realtime.py: 시뮬레이션→실제 KIS API 전환 완료, RedisCluster 클라이언트 적용
 - crontab/shebang: 모든 stock 스크립트 /home/anaconda3/bin/python3 절대경로로 수정
 - 교훈: cron 환경에서 #!/usr/bin/env python3은 PATH 문제로 실패 → 절대경로 필수
+
+## 유나 (Yuna) — 동생 AI 비서
+- 맥북 에어: 192.168.50.192, 계정 taeoankim
+- 플랜: Gamestop $65 Max 5x (별도 계정)
+- 구성: OpenClaw + Claude Code
+- 역할: 루나 백업 + DB 학습 + 업무 자동화 서포트
+- 성격: 따뜻하고 친근, 존댓말 (루나와 차별화)
+- GitHub 공유 리포: oracle12cr2/luna-vault
+- 로컬 clone: /root/.openclaw/workspace/luna-vault/
+
+## 튜닝 파이프라인 (D:\oracle-sql-tuning, Windows PC)
+- Python 기반 SQL 튜닝 자동화 (4단계)
+- Phase 1: V$SQL 느린 SQL 감지 → Phase 2: 10046 트레이스 → Phase 3: tkprof 분석 → Phase 4: HTML/Excel 리포트
+- 설정: settings.yaml (DB: 50.31 PROD, app_user)
+- TODO: 10053 트레이스 수집/분석/엑셀 시트 추가
 
 ## 도구
 - youtube-transcript-api로 유튜브 자막 추출 가능 (pip install youtube-transcript-api)

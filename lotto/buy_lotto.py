@@ -29,7 +29,7 @@ NUM_MAX = 40
 SMTP_SERVER = "smtp.naver.com"
 SMTP_PORT = 587
 MAIL_FROM = "kto2004@naver.com"
-MAIL_PW = "LX3Q4R5WQPSF"  # 네이버 앱 비밀번호
+MAIL_PW = "YM512KB4JEB8"  # 네이버 앱 비밀번호
 MAIL_TO = "kto2004@naver.com"
 
 LOGIN_URL = "https://www.dhlottery.co.kr/login"
@@ -132,10 +132,31 @@ def buy_lotto(driver, number_sets):
     )
     log(f"{cur_round}회차 구매 페이지")
 
-    # 예치금 확인
-    deposit = driver.execute_script(
-        "var el = document.getElementById('moneyBalance'); return el ? parseInt(el.value) : 0;"
-    )
+    # 예치금 확인 (모바일 페이지에서 여러 방법으로 시도)
+    deposit = driver.execute_script("""
+        // 방법 1: moneyBalance input value
+        var el = document.getElementById('moneyBalance');
+        if (el && el.value) { var v = parseInt(el.value); if (!isNaN(v)) return v; }
+        // 방법 2: moneyBalance textContent
+        if (el && el.textContent.trim()) {
+            var v = parseInt(el.textContent.trim().replace(/[^0-9]/g, ''));
+            if (!isNaN(v)) return v;
+        }
+        // 방법 3: depositAmount 등 다른 ID
+        var alt = document.getElementById('depositAmount') || document.getElementById('myMoney');
+        if (alt) {
+            var t = alt.value || alt.textContent.trim();
+            var v = parseInt(t.replace(/[^0-9]/g, ''));
+            if (!isNaN(v)) return v;
+        }
+        // 방법 4: 텍스트에서 "원" 앞 숫자 추출
+        var body = document.body.innerText;
+        var m = body.match(/([0-9,]+)\s*원/);
+        if (m) { var v = parseInt(m[1].replace(/,/g, '')); if (!isNaN(v)) return v; }
+        return 0;
+    """)
+    if deposit is None:
+        deposit = 0
     log(f"예치금: {deposit:,}원")
 
     required = NUM_SETS * 1000
@@ -307,9 +328,10 @@ def main():
             for t in tickets:
                 body_lines.append(f"  {t['game']} [{t['type']}]: {', '.join(t['nums'])}")
 
-            body_lines.append(f"\n예치금 잔액: {result['deposit_after']:,}원")
+            deposit_after = result.get('deposit_after') or 0
+            body_lines.append(f"\n예치금 잔액: {deposit_after:,}원")
 
-            if result['deposit_after'] < 5000:
+            if deposit_after < 5000:
                 body_lines.append(f"\n⚠️ 예치금이 부족합니다! 다음 주 구매를 위해 충전해주세요.")
 
             send_mail(

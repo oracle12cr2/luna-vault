@@ -7,9 +7,21 @@
 # Add tasks below when you want the agent to check something periodically.
 
 ## 2026-03-13 할 일
-- [ ] 블로그 복구: Oracle에 BLOG_POST 등 테이블 생성 → blog-api/blog-front 재시작 (webserver01/02)
+- [x] 블로그 복구: Oracle에 BLOG_POST 등 테이블 생성 → blog-api/blog-front 재시작 (webserver01/02) — 완료!
 - [ ] MCP Oracle 서버 디버깅: Claude Desktop 핸드셰이크 disconnected 문제 해결
 - [ ] Oracle DBA 스크립트 채워넣기 (oracle-scripts/)
+- [ ] 미국장 마감 분석 스크립트: 07:00 KST 수집 (섹터별, SOX, 국채금리, Fear&Greed)
+
+## 블로그 리디자인
+- [ ] Next.js 프론트 리디자인: 사이드바 레이아웃 (프로필+검색+카테고리 트리)
+- [ ] 카테고리 계층구조 + 게시글 수 표시
+- [ ] 태그(해시태그) 시스템 추가 (DB 테이블 + API + UI)
+- [ ] 본문 스타일: blockquote, 코드블록, 기술 블로그 느낌
+- [ ] 레퍼런스: 박영민 Oracle DBA 블로그 (Tistory) 스타일
+
+## 프로젝트 대기열
+- [ ] Luna Dashboard: Jarvis 스타일 개인 AI 대시보드 (Next.js, 다크테마)
+- [ ] 테이블스페이스 resize: OGG RAC 큰 datafile 정리 + SYSAUX AWR baseline 설정
 
 ## TODO
 - [x] 동행복권 자동 구매 스크립트 개발 (완료 2026-03-05)

@@ -38,7 +38,7 @@ Things like:
 - 용도: 리니지M(Purple) 24시간 가동, Claude 데스크톱, Chrome
 - 리니지M 리소스 제한: BelowNormal + CPU 4코어(0-3), 로그온 시 자동 적용
 - 프로세스 모니터링: C:\Scripts\check_lineagem.ps1 (Purple+LineageM 종료 시 네이버 메일 알림)
-- 네이버 SMTP: kto2004@naver.com / LX3Q4R5WQPSF
+- 네이버 SMTP: kto2004@naver.com / YM512KB4JEB8
 
 ## Examples
 
