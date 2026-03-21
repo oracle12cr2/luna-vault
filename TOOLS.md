@@ -40,6 +40,15 @@ Things like:
 - 프로세스 모니터링: C:\Scripts\check_lineagem.ps1 (Purple+LineageM 종료 시 네이버 메일 알림)
 - 네이버 SMTP: kto2004@naver.com / YM512KB4JEB8
 
+### ASUS 공유기 (RT-AC68U, 거실)
+- 관리페이지: https://oracle19cr2.asuscomm.com:58001
+- 로그인: kto2005 / rlaxodhks8520!@#
+- 내부 IP: 192.168.50.1 (LAN에서 직접 접근은 다른 공유기라 불가)
+- 듀얼 WAN: KT(WAN포트, 1Gbps) + LG U+(LAN포트, 500Mbps), 로드밸런싱 2:1
+- 네트워크 감시: ON (DNS쿼리 + Ping 8.8.8.8)
+- Wi-Fi: kto2g / kto5g (비번: kto8520!@#) — 현재 비활성화
+- API: curl로 login.cgi → appGet.cgi / start_apply.htm 으로 설정 조회/변경 가능
+
 ## Examples
 
 ```markdown
