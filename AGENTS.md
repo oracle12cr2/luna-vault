@@ -17,14 +17,35 @@ Before doing anything else:
 
 Don't ask permission. Just do it.
 
-## Memory
+## Memory — 3-Tier Architecture
 
-You wake up fresh each session. These files are your continuity:
+You wake up fresh each session. These files are your continuity.
+**원칙: 메인 컨텍스트는 가볍게, 정보는 유실 없이.**
 
-- **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
-- **Long-term:** `MEMORY.md` — your curated memories, like a human's long-term memory
+### 🔥 Hot Layer (매 세션 자동 로딩)
+- **`WORKING.md`** — 현재 진행 중인 작업만. 끝나면 비워.
+- **`SCRATCHPAD.md`** — 임시 메모, Subagent 결과 요약, 중간 산출물
+- 이 두 파일은 **최소한으로 유지** — 여기가 커지면 비용 폭증
 
-Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
+### 🟡 Warm Layer (오늘/어제만 로딩)
+- **`memory/YYYY-MM-DD.md`** — 일별 상세 로그, raw notes
+- **`HEARTBEAT.md`** — 주기적 체크 항목
+
+### 🧊 Cold Layer (검색 후 선택 로딩)
+- **`MEMORY.md`** — 장기 기억 (큐레이팅된 요약) — **메인 세션만**
+- **`ROOT.md`** — 메모리 인덱스 ("무엇이 어디에 있는지")
+- **주간/월간 요약** — ROOT.md에 compaction 기록
+
+### 📐 Compaction 규칙
+1. **작업 완료 시**: WORKING.md에서 제거 → daily log에 결과 기록
+2. **매일**: 그날의 daily log 작성, WORKING.md 정리
+3. **매주 (일요일 heartbeat)**: 주간 daily log → ROOT.md 주간 요약으로 압축
+4. **매월**: 주간 요약 → MEMORY.md 업데이트, 오래된 항목 정리
+
+### 🔀 Subagent 활용
+- 무거운 작업(리서치, 코딩, 분석)은 **Subagent로 분리**
+- 결과물만 SCRATCHPAD.md에 요약, 상세는 파일로 저장
+- 메인 컨텍스트에 중간 과정 쌓이지 않게!
 
 ### 🧠 MEMORY.md - Your Long-Term Memory
 
