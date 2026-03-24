@@ -1,0 +1,14 @@
+# C.튜닝
+
+> 📂 원본: `4장 함수 튜닝/실습 4-2/C.튜닝.txt`
+
+```sql
+SELECT 
+  AGENT_NO, YYYYMM, SALE_AMT, 
+  SUM(SALE_AMT) OVER
+  (PARTITION BY AGENT_NO 
+   ORDER BY AGENT_NO, YYYYMM 
+   ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+FROM TB_SALE_MONTH ;
+
+```

@@ -1,0 +1,23 @@
+# C.튜닝
+
+> 📂 원본: `3장 조인 튜닝/실습 3-6/C.튜닝.txt`
+
+```sql
+SELECT
+  X.EXPORTER_NO,
+  (SELECT B.EXPORTER_NM
+   FROM TB_EXPORTER B
+   WHERE
+     B.EXPORTER_NO = X.EXPORTER_NO), TOT_CNT
+FROM
+  (SELECT
+     A.EXPORTER_NO,
+     SUM(A.TRD_CNT-A.CNCL_CNT) TOT_CNT
+   FROM TB_TRD_DAY A
+   WHERE
+     A.TRD_DT BETWEEN '20100101' AND '20151231'
+   GROUP BY A.EXPORTER_NO
+   ORDER BY A.EXPORTER_NO
+  ) X ;
+
+```

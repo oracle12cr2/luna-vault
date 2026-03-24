@@ -1,0 +1,16 @@
+# B.튜닝 전 상황
+
+> 📂 원본: `4장 함수 튜닝/실습 4-2/B.튜닝 전 상황.txt`
+
+```sql
+SELECT
+A.AGENT_NO, A.YYYYMM, MIN(A.SALE_AMT), SUM(B.SALE_AMT)
+FROM
+TB_SALE_MONTH A,
+TB_SALE_MONTH B
+WHERE A.YYYYMM >= B.YYYYMM
+AND A.AGENT_NO = B.AGENT_NO
+GROUP BY A.AGENT_NO, A.YYYYMM
+ORDER BY A.AGENT_NO, A.YYYYMM;
+
+```

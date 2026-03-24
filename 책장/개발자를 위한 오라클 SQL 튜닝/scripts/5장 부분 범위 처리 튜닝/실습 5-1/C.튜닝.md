@@ -1,0 +1,33 @@
+# C.튜닝
+
+> 📂 원본: `5장 부분 범위 처리 튜닝/실습 5-1/C.튜닝.txt`
+
+```sql
+SELECT
+*
+FROM
+(
+    SELECT ORD_NO MAX_ORD_NO , '1' DUMMY
+    FROM
+    (
+        SELECT ORD_NO
+        FROM TB_ORD_DAY
+        WHERE ORD_DT = TO_CHAR(SYSDATE - 30, 'YYYYMMDD')
+        ORDER BY ORD_NO DESC
+    )
+    WHERE ROWNUM <= 1
+) A,
+(
+    SELECT ORD_NO MIN_ORD_NO,  '1' DUMMY
+    FROM
+    (
+        SELECT ORD_NO
+        FROM TB_ORD_DAY
+        WHERE ORD_DT = TO_CHAR(SYSDATE - 30, 'YYYYMMDD')
+        ORDER BY ORD_NO ASC
+    )
+    WHERE ROWNUM <= 1
+) B
+WHERE A.DUMMY = B.DUMMY;
+
+```

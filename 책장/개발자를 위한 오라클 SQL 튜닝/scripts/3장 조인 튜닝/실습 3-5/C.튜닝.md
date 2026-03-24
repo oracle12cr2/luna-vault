@@ -1,0 +1,16 @@
+# C.튜닝
+
+> 📂 원본: `3장 조인 튜닝/실습 3-5/C.튜닝.txt`
+
+```sql
+SELECT
+	/*+ LEADING(A) USE_NL(B) USE_NL(C) */
+	A.JOB_NO, A.WORKER_ID, A.JOB_STATUS_CD, A.REQ_NO
+FROM TB_JOB_ORDER A,
+TB_OPEN_REQ B,
+TB_DISABLE_REQ C
+WHERE A.VISIT_PRE_DT = '20151102'
+AND  DECODE(A.JOB_GUBUN, '1', A.REQ_NO) = B.OPEN_REQ_NO(+)
+AND  DECODE(A.JOB_GUBUN, '2', A.REQ_NO) = C.DISABLE_REQ_NO(+);
+
+```

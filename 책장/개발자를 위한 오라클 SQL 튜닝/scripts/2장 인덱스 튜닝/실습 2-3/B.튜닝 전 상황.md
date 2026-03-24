@@ -1,0 +1,17 @@
+# B.튜닝 전 상황
+
+> 📂 원본: `2장 인덱스 튜닝/실습 2-3/B.튜닝 전 상황.txt`
+
+```sql
+SELECT 
+/*+ INDEX(TB_SUPP TB_SUPP_IDX01) */
+    SUBSTR(INST_DT, 1, 6),
+    COUNT(*)
+FROM TB_SUPP
+WHERE INST_DT BETWEEN 
+TO_CHAR(SYSDATE - 365, 'YYYYMMDD')
+AND TO_CHAR(SYSDATE, 'YYYYMMDD')
+AND SUPP_NM LIKE '%A%'
+GROUP BY SUBSTR(INST_DT, 1, 6);
+
+```
