@@ -2,9 +2,18 @@
 """
 동행복권 로또6/45 자동 구매 스크립트
 - 매주 cron으로 실행
-- 5세트 (번호 범위 5~40)
+- 5세트 (7가지 검증 전략 적용)
 - 예치금 부족 시 메일 알림
 - 구매 결과 메일 알림
+
+적용 전략:
+◎ 1. 홀짝 균형 (2:4 ~ 4:2) - 82.5% 커버
+◎ 2. 구간별 균형 (각 구간 1개 이상) - 77.8% 커버
+◎ 3. 등차수열 금지 - 100%
+◎ 4. 이전 당첨번호 완전 일치 금지 - 100%
+○ 5. 연속번호 제한 (최대 2개) - 94.5% 커버
+○ 6. 끝자리 중복 제한 (최대 2개) - 91.8% 커버
+○ 7. 합계 범위 (100~170) - 73.2% 커버
 """
 
 import sys
@@ -12,6 +21,7 @@ import time
 import random
 import json
 import smtplib
+import requests
 from email.mime.text import MIMEText
 from datetime import datetime
 from selenium import webdriver
@@ -22,8 +32,6 @@ from selenium.webdriver.chrome.options import Options
 USER_ID = "kto2004"
 USER_PW = "kto8520!@#"
 NUM_SETS = 5
-NUM_MIN = 5
-NUM_MAX = 40
 
 # 메일 설정
 SMTP_SERVER = "smtp.naver.com"
@@ -64,12 +72,152 @@ def send_mail(subject, body):
         log(f"메일 발송 실패: {e}")
 
 
+# ============================================================================
+# 7가지 검증 전략
+# ============================================================================
+
+def check_odd_even_balance(numbers):
+    """전략 1: 홀짝 균형 (홀수 2~4개)"""
+    odd_count = sum(1 for n in numbers if n % 2 == 1)
+    return 2 <= odd_count <= 4
+
+def check_range_balance(numbers):
+    """전략 2: 구간별 균형 (1-15, 16-30, 31-45 각 1개 이상)"""
+    low = sum(1 for n in numbers if 1 <= n <= 15)
+    mid = sum(1 for n in numbers if 16 <= n <= 30)
+    high = sum(1 for n in numbers if 31 <= n <= 45)
+    return low >= 1 and mid >= 1 and high >= 1
+
+def check_no_arithmetic_sequence(numbers):
+    """전략 3: 등차수열 금지"""
+    s = sorted(numbers)
+    diffs = [s[i+1] - s[i] for i in range(len(s)-1)]
+    return len(set(diffs)) > 1  # 모든 차이가 같으면 등차수열
+
+def check_not_same_as_last(numbers, last_draw):
+    """전략 4: 이전 당첨번호 완전 일치 금지"""
+    if not last_draw:
+        return True
+    return sorted(numbers) != sorted(last_draw)
+
+def check_consecutive_limit(numbers):
+    """전략 5: 연속번호 제한 (최대 2개)"""
+    s = sorted(numbers)
+    max_consec = 1
+    cur = 1
+    for i in range(1, len(s)):
+        if s[i] == s[i-1] + 1:
+            cur += 1
+            max_consec = max(max_consec, cur)
+        else:
+            cur = 1
+    return max_consec <= 2
+
+def check_last_digit_limit(numbers):
+    """전략 6: 끝자리 중복 제한 (최대 2개)"""
+    from collections import Counter
+    digits = Counter(n % 10 for n in numbers)
+    return all(v <= 2 for v in digits.values())
+
+def check_sum_range(numbers):
+    """전략 7: 합계 범위 (100~170)"""
+    return 100 <= sum(numbers) <= 170
+
+def validate_all(numbers, last_draw):
+    """7가지 전략 모두 통과 여부"""
+    return (check_odd_even_balance(numbers) and
+            check_range_balance(numbers) and
+            check_no_arithmetic_sequence(numbers) and
+            check_not_same_as_last(numbers, last_draw) and
+            check_consecutive_limit(numbers) and
+            check_last_digit_limit(numbers) and
+            check_sum_range(numbers))
+
+GOOGLE_SHEET_ID = "16tt7cSqdts3fObqfC2Q5eYIiwL-k2lFBMUasrzs2UE0"
+DB_DSN = "192.168.50.35:1521/PROD"
+DB_USER = "app_user"
+DB_PASS = "oracle"
+
+def fetch_last_draw():
+    """Oracle DB에서 최신 당첨번호 가져오기 (fallback: Google Sheet)"""
+    # 1차: Oracle DB
+    try:
+        import cx_Oracle
+        dsn = cx_Oracle.makedsn("192.168.50.35", 1521, service_name="PROD")
+        conn = cx_Oracle.connect(DB_USER, DB_PASS, dsn)
+        cur = conn.cursor()
+        cur.execute("SELECT DRAW_NO, NUM1,NUM2,NUM3,NUM4,NUM5,NUM6 FROM TB_LOTTO_DRAW ORDER BY DRAW_NO DESC FETCH FIRST 1 ROW ONLY")
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            nums = sorted([row[i] for i in range(1, 7)])
+            log(f"최신 당첨번호 (DB): {row[0]}회차 {nums}")
+            return nums
+    except Exception as e:
+        log(f"DB 조회 실패: {e}")
+
+    # 2차: Google Sheet fallback
+    try:
+        url = f"https://docs.google.com/spreadsheets/d/{GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=로또당첨번호"
+        r = requests.get(url, timeout=10)
+        lines = r.text.strip().split('\n')
+        for line in reversed(lines):
+            parts = line.replace('"', '').split(',')
+            if len(parts) >= 8 and parts[2].strip():
+                try:
+                    nums = sorted([int(parts[i]) for i in range(2, 8)])
+                    log(f"최신 당첨번호 (Sheet): {parts[0]}회차 {nums}")
+                    return nums
+                except ValueError:
+                    continue
+    except Exception as e:
+        log(f"Sheet 조회도 실패: {e}")
+
+    log("당첨번호 조회 실패 — 전략4 스킵")
+    return None
+
+def save_purchase_to_db(draw_no, number_sets):
+    """구매 번호를 DB에 저장"""
+    try:
+        import cx_Oracle
+        dsn = cx_Oracle.makedsn("192.168.50.35", 1521, service_name="PROD")
+        conn = cx_Oracle.connect(DB_USER, DB_PASS, dsn)
+        cur = conn.cursor()
+        for seq, nums in enumerate(number_sets, 1):
+            cur.execute("""
+                INSERT INTO TB_LOTTO_PURCHASE (DRAW_NO, SET_SEQ, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6)
+                VALUES (:1, :2, :3, :4, :5, :6, :7, :8)
+            """, (int(draw_no), seq, *nums))
+        conn.commit()
+        cur.close()
+        conn.close()
+        log(f"구매 이력 DB 저장 완료: {draw_no}회차 {len(number_sets)}세트")
+    except Exception as e:
+        log(f"구매 이력 DB 저장 실패: {e}")
+
 def generate_numbers():
-    """5~40 범위에서 6개 번호 5세트 생성"""
+    """7가지 전략을 적용한 6개 번호 5세트 생성 (1~45 전체)"""
+    last_draw = fetch_last_draw()
     sets = []
+    used = set()
+
     for _ in range(NUM_SETS):
-        nums = sorted(random.sample(range(NUM_MIN, NUM_MAX + 1), 6))
-        sets.append(nums)
+        attempts = 0
+        while attempts < 10000:
+            nums = sorted(random.sample(range(1, 46), 6))
+            key = tuple(nums)
+            if key not in used and validate_all(nums, last_draw):
+                used.add(key)
+                sets.append(nums)
+                break
+            attempts += 1
+        else:
+            # fallback: 전략 완화
+            nums = sorted(random.sample(range(1, 46), 6))
+            sets.append(nums)
+            log("⚠️ 전략 만족 번호 생성 실패, fallback 사용")
+
     return sets
 
 
@@ -316,6 +464,9 @@ def main():
         if result and result['result'].get('tickets'):
             tickets = result['result']['tickets']
             log("🎉 구매 성공!")
+
+            # DB에 구매 이력 저장
+            save_purchase_to_db(result['round'], number_sets)
 
             # 결과 메일
             body_lines = [

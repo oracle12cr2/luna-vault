@@ -8,7 +8,6 @@
 - 닉네임 "남궁건"으로 통일 (디스코드 포함)
 
 ## 설정
-- 텔레그램 봇: @ora19cbot
 - 게이트웨이: local 모드, LAN 바인딩, 포트 18789
 - 서버: 2690v4 (Linux, Rocky/RHEL 계열), IP: 192.168.50.56
 - Grafana: 192.168.50.56:3000 (admin/rlaxodhks)

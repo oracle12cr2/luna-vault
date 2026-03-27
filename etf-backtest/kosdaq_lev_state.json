@@ -1,0 +1,9 @@
+{
+  "entry_price": 15706.562,
+  "initial_qty": 64,
+  "stop1_triggered": false,
+  "stop1_sell_price": null,
+  "stop2_triggered": false,
+  "dip_buy_triggered": false,
+  "created_at": "2026-03-27T09:54:50.562666"
+}

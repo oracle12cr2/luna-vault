@@ -31,15 +31,34 @@ Things like:
 
 ### Windows PC
 - 호스트명: 1260P (windows)
-- IP: 192.168.50.30
-- SSH: kto@192.168.50.30 (ed25519 키 인증)
-- 접속: `ssh -i ~/.ssh/id_ed25519 kto@192.168.50.30`
+- IP: 192.168.50.226
+- SSH: kto@192.168.50.226 (ed25519 키 인증)
+- 접속: `ssh -i ~/.ssh/id_ed25519 kto@192.168.50.226`
 - 유저: kto (관리자)
 - 용도: 리니지M(Purple) 24시간 가동, Claude 데스크톱, Chrome
 - 리니지M 리소스 제한: BelowNormal + CPU 4코어(0-3), 로그온 시 자동 적용
 - 프로세스 모니터링: C:\Scripts\check_lineagem.ps1 (Purple+LineageM 종료 시 네이버 메일 알림)
 - 네이버 SMTP: kto2004@naver.com / YM512KB4JEB8
 
+<<<<<<< Updated upstream
+=======
+### NAS (ASUSTOR)
+- 호스트: oracle23cr2.myasustor.com
+- FTP 포트: 3000
+- 계정: admin / rlaxodhks8520!@#
+- 접속: `curl --ftp-ssl --insecure -u "admin:rlaxodhks8520!@#" ftp://oracle23cr2.myasustor.com:3000/`
+- 폴더: Oracle_Study, 19_Data, home, Web, Data
+
+### 교보문고
+- 계정: kto2005 / kto8520!@#
+
+### ASUS 공유기 (RT-AX57, 서재/메인)
+- 관리페이지: http://192.168.50.1 (내부 직접 접근)
+- 로그인: admin / rlaxodhks8520!@#
+- 역할: 서버(.56), PC(.30) 등 주요 기기 연결
+- API: curl로 login.cgi → appGet.cgi / start_apply.htm
+
+>>>>>>> Stashed changes
 ### ASUS 공유기 (RT-AC68U, 거실)
 - 관리페이지: https://oracle19cr2.asuscomm.com:58001
 - 로그인: kto2005 / rlaxodhks8520!@#
@@ -49,6 +68,18 @@ Things like:
 - Wi-Fi: kto2g / kto5g (비번: kto8520!@#) — 현재 비활성화
 - API: curl로 login.cgi → appGet.cgi / start_apply.htm 으로 설정 조회/변경 가능
 
+<<<<<<< Updated upstream
+=======
+### 블로그 (oracle23cr2.asuscomm.com)
+- **프론트 소스**: webserver01/02 `/opt/blog-front/` (Next.js, PM2)
+- **API 소스**: webserver01/02 `/opt/blog-front/` 내 blog-api (Fastify, PM2)
+- **About 페이지**: 정적 HTML `/var/www/about/index.html` (nginx alias, 호스트 서버 56)
+  - nginx 설정: `/etc/nginx/conf.d/openclaw.conf` → `location /about { alias /var/www/about/; }`
+- **배포**: `npm run build && pm2 restart blog-front` (양쪽 서버)
+- **DB**: Oracle 19c (app_user@50.35:1521/PROD)
+- **관리자**: oracle23cr2.asuscomm.com/admin (admin/admin1234)
+
+>>>>>>> Stashed changes
 ## Examples
 
 ```markdown

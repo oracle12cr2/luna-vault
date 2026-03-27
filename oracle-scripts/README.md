@@ -2,6 +2,9 @@
 
 Oracle 19c RAC/Single 환경에서 자주 쓰는 DBA 스크립트
 
+## 참고 자료
+- **Oracle-BASE DBA Scripts**: https://oracle-base.com/dba/scripts (Tim Hall, 8i~26ai)
+
 ## 구조
 - `monitoring/` — 모니터링 (세션, 락, 대기, ASH)
 - `performance/` — 성능 분석 (AWR, SQL 튜닝)

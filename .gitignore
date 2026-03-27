@@ -3,3 +3,7 @@
 __pycache__/
 .env
 HEARTBEAT.md
+voice-remote
+discord_check.js
+discord_cleanup.js
+discord_cleanup_v2.js
