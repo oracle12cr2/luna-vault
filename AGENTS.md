@@ -34,7 +34,14 @@ You wake up fresh each session. These files are your continuity.
 ### 🧊 Cold Layer (검색 후 선택 로딩)
 - **`MEMORY.md`** — 장기 기억 (큐레이팅된 요약) — **메인 세션만**
 - **`ROOT.md`** — 메모리 인덱스 ("무엇이 어디에 있는지")
+- **`memory/lessons/`** — 패턴 & 교훈 저장소 (루나와 공유, trigger/domain/confidence 구조)
 - **주간/월간 요약** — ROOT.md에 compaction 기록
+
+### 🎓 학습 시스템 (Lessons Learned)
+1. **기록 시점**: 비 trivial한 문제 해결 후 즉시 `memory/lessons/`에 파일 생성
+2. **파일 포맷**: README.md 참고 (trigger, domain, confidence + 문제/원인/해결/교훈)
+3. **공유**: 루나와 luna-vault 리포를 통해 양방향 공유
+4. **주간 리뷰**: lessons → MEMORY.md 반영, 폐기 파일 정리
 
 ### 📐 Compaction 규칙
 1. **작업 완료 시**: WORKING.md에서 제거 → daily log에 결과 기록
