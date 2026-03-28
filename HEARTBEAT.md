@@ -4,6 +4,11 @@
 - **다음 업데이트 체크**: 2026-04-04 (2주 주기)
 - 명령어: `npm view openclaw version` vs 현재버전 비교
 
+## 주간 학습 리뷰 (일요일 heartbeat)
+- [ ] `memory/lessons/` 새 파일 확인 → 중요한 것 MEMORY.md 반영
+- [ ] 이번 주 daily log에서 빠진 교훈 있으면 lessons 파일 생성
+- [ ] confidence ❌ 파일 정리 (폐기 or 업데이트)
+
 # Add tasks below when you want the agent to check something periodically.
 
 ## 2026-03-13 할 일
@@ -20,8 +25,8 @@
 - [ ] 레퍼런스: 박영민 Oracle DBA 블로그 (Tistory) 스타일
 
 ## 2026-03-31 (월) 할 일
-- [ ] 기존 보유종목(ACE200 32주, TIGER 반도체 223주) 처리 방향 결정
-- [ ] 예수금 확보 후 데이트레이딩 실전 모의투자 테스트 (09:30 매수 → 14:50 청산)
+- [x] ~~기존 보유종목(ACE200 32주, TIGER 반도체 223주)~~ — 이미 매도 완료, 보유 없음
+- [ ] 데이트레이딩 실전 모의투자 테스트 (09:30 매수 → 14:50 청산)
 
 ## Kafka 연동
 - [x] Oracle OGG RAC → Kafka → 3Node RAC (Debezium + JDBC Sink, 정상 동작 확인 3/22)

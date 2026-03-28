@@ -41,7 +41,8 @@ You wake up fresh each session. These files are your continuity.
 1. **기록 시점**: 비 trivial한 문제 해결 후 즉시 `memory/lessons/`에 파일 생성
 2. **파일 포맷**: README.md 참고 (trigger, domain, confidence + 문제/원인/해결/교훈)
 3. **공유**: 루나와 luna-vault 리포를 통해 양방향 공유
-4. **주간 리뷰**: lessons → MEMORY.md 반영, 폐기 파일 정리
+4. **주간 리뷰**: 일요일 heartbeat에서 lessons → MEMORY.md 반영, 폐기 파일 정리
+5. **검색**: `memory_search`로 교훈 검색 가능 → 같은 실수 반복 방지
 
 ### 📐 Compaction 규칙
 1. **작업 완료 시**: WORKING.md에서 제거 → daily log에 결과 기록
