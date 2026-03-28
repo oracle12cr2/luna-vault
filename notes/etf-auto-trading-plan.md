@@ -187,6 +187,109 @@
 
 ---
 
+---
+
+## 실시간 데이터 활용 방안
+
+### 현재 상태
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| **kis_realtime.py** | ✅ 동작 중 | 평일 08:55 시작, WebSocket 체결+호가 수신 |
+| **TB_TICK_DATA** | ✅ 385만건 | 체결가, 거래량, 누적거래량, 체결강도 |
+| **TB_ORDERBOOK_SNAP** | ✅ 780만건 | 매수/매도 10호가 |
+| **etf_redis_realtime.py** | ❌ 3/12 이후 중단 | Redis 캐시 비어있음, 재시작 필요 |
+| **daytrading.py 현재가** | ⚠️ KIS REST API 단건 조회 | 실시간 아님, 호출 시점 가격만 |
+
+### 개선 방안 3가지
+
+#### 방안 A: Oracle DB 직접 조회 (가장 간단)
+kis_realtime.py가 이미 TB_TICK_DATA에 실시간 저장 중이므로, daytrading.py에서 직접 조회
+```sql
+-- 최근 5분 체결 데이터 (거래량 추세, 체결강도)
+SELECT CURRENT_PRICE, TRADE_VOL, ACCUM_VOL, TRADE_STRENGTH
+FROM stock.TB_TICK_DATA
+WHERE STOCK_CODE = :code AND TRADE_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+ORDER BY TRADE_TM DESC FETCH FIRST 100 ROWS ONLY;
+
+-- 호가 스프레드 (유동성)
+SELECT SELL_HOG1, BUY_HOG1, TOTAL_SELL_VOL, TOTAL_BUY_VOL
+FROM stock.TB_ORDERBOOK_SNAP
+WHERE STOCK_CODE = :code AND SNAP_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+ORDER BY SNAP_TM DESC FETCH FIRST 1 ROWS ONLY;
+```
+
+**장점**: 코드 변경 최소, 이미 데이터 있음
+**단점**: DB 부하, 약간의 지연 (배치 INSERT 간격 5초)
+
+#### 방안 B: Redis 캐시 복구 + 실시간 조회
+etf_redis_realtime.py를 재시작하여 Redis에 실시간 캐시
+```python
+# Redis에서 현재가 조회 (1ms 이내)
+redis_client.hget(f"etf:current:{stock_code}", "current_price")
+redis_client.hget(f"etf:current:{stock_code}", "trade_strength")
+redis_client.hget(f"etf:current:{stock_code}", "accum_vol")
+```
+
+**장점**: 초고속 조회, DB 부하 없음
+**단점**: Redis 프로세스 관리 필요, etf_redis_realtime.py 재시작 필요
+
+#### 방안 C: WebSocket 직접 수신 (daytrading 전용)
+daytrading.py 안에서 직접 WebSocket 연결, 실시간 체결 스트림 수신
+
+**장점**: 지연 0, 가장 정확
+**단점**: 코드 대폭 변경, WebSocket 연결 관리 복잡
+
+### 추천: 방안 A + B 조합 (단계적)
+
+**1단계 (즉시)**: 방안 A — daytrading.py에 DB 조회 함수 추가
+- `get_realtime_data(stock_code)` 함수 추가
+- 최근 5분 체결 데이터에서 추출:
+  - **VWAP** (거래량 가중 평균 가격)
+  - **체결강도** (매수 vs 매도 비율, 100 이상이면 매수 우세)
+  - **거래량 추세** (최근 5분 거래량 / 30분 평균 대비)
+  - **호가 스프레드** (매수1호가 - 매도1호가)
+  - **매수/매도 잔량 비율** (총매수잔량 / 총매도잔량)
+
+**2단계 (1주 후)**: 방안 B — Redis 캐시 복구
+- etf_redis_realtime.py 재시작
+- daytrading.py에서 Redis 우선 조회, 실패 시 DB 폴백
+
+### 매수/매도 판단에 실시간 데이터 반영
+
+#### 매수 조건 강화
+기존: 멀티팩터 스코어 70+ → 매수
+변경: 멀티팩터 스코어 70+ **AND** 실시간 조건 충족 → 매수
+
+| 실시간 조건 | 기준 | 이유 |
+|-------------|------|------|
+| 체결강도 > 100 | 매수세 > 매도세 | 매수 흐름 확인 |
+| 5분 거래량 > 30분 평균 ×1.2 | 거래 활발 | 유동성 확보 |
+| 매수잔량/매도잔량 > 0.8 | 호가 균형 | 급락 위험 낮음 |
+| 스프레드 < 0.3% | 호가 촘촘 | 슬리피지 최소화 |
+
+#### 매도 조건 강화 (손절 정밀화)
+기존: 10분마다 잔고 조회 → -3% 이하 매도
+변경: DB에서 실시간 체결가 확인 → 더 빠른 손절
+
+```
+현재 손절 체크: 10분마다 (cron */10)
+개선 후: 1분마다 DB 조회 (또는 Redis 실시간)
+```
+
+#### 유나 AI 분석에 실시간 데이터 추가
+
+유나 08:25 분석 시:
+- 전일 체결 데이터 분석 (장 마지막 30분 매수/매도 추세)
+- 전일 호가 잔량 추세 (장 종료 직전 매수잔량 증가 = 익일 상승 가능성)
+- 체결강도 추세 (오후 체결강도 > 오전 = 긍정적)
+
+유나 장중 모니터링 (향후):
+- 급등/급락 감지 (5분 내 2% 이상 변동)
+- 거래량 폭증 감지 (평소 대비 3배 이상)
+- 즉시 알림 → 필요 시 긴급 매도
+
+---
+
 ## 모니터링 체크리스트
 
 ### 매일 (자동)
