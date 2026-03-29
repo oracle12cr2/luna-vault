@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 """
-로또 당첨 결과 확인 및 메일 발송
+로또 당첨 결과 확인 및 카톡 발송
 매주 월요일 09시 실행용
 """
 
 import sys
 import time
-import smtplib
 import subprocess
 import os
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -21,13 +18,6 @@ from datetime import datetime, timedelta
 # 설정
 USER_ID = "kto2004"
 USER_PW = "kto8520!@#"
-
-# 메일 설정
-MAIL_FROM = "kto2004@naver.com"
-MAIL_TO = "kto2004@naver.com"
-MAIL_PW = "LX3Q4R5WQPSF"  # 네이버 앱 비밀번호 (naver_cafe/config.py에서 확인)
-SMTP_SERVER = "smtp.naver.com"
-SMTP_PORT = 587
 
 LOGIN_URL = "https://www.dhlottery.co.kr/login"
 HISTORY_URL = "https://ol.dhlottery.co.kr/olotto/game/gameResult.do"
@@ -51,25 +41,6 @@ def send_kakao(message, recipient="김태완"):
             return False
     except Exception as e:
         log(f"카톡 전송 에러: {e}")
-        return False
-
-def send_mail(subject, body):
-    """메일 발송"""
-    try:
-        msg = MIMEMultipart()
-        msg['From'] = MAIL_FROM
-        msg['To'] = MAIL_TO
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain', 'utf-8'))
-        
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(MAIL_FROM, MAIL_PW)
-            server.sendmail(MAIL_FROM, MAIL_TO, msg.as_string())
-        log("메일 발송 성공")
-        return True
-    except Exception as e:
-        log(f"메일 발송 실패: {e}")
         return False
 
 def login(driver):
@@ -193,7 +164,7 @@ def main():
     try:
         # 로그인
         if not login(driver):
-            send_mail("[로또] 당첨 확인 실패", "동행복권 로그인에 실패했습니다.")
+            send_kakao("❌ 동행복권 로그인 실패", "김태완(메인)")
             return
         
         # 당첨 내역 조회
@@ -201,41 +172,6 @@ def main():
         
         # 예치금 조회
         balance = get_balance(driver)
-        
-        # 메일 내용 작성
-        if wins:
-            subject = f"🎉 로또 당첨 알림 ({len(wins)}건)"
-            body = "🎊 로또 당첨 결과를 알려드립니다!\n\n"
-            
-            total_amount = 0
-            for w in wins:
-                body += f"📍 {w['round']}회차 ({w['draw_date']})\n"
-                body += f"   구매일: {w['buy_date']}\n"
-                body += f"   번호: {w['numbers']}\n"
-                body += f"   결과: {w['result']}\n"
-                body += f"   당첨금: {w['amount']}\n\n"
-                
-                # 당첨금 합계 계산
-                try:
-                    amount_num = int(w['amount'].replace(',', '').replace('원', ''))
-                    total_amount += amount_num
-                except:
-                    pass
-            
-            body += f"💰 총 당첨금: {total_amount:,}원\n"
-            body += f"💳 현재 예치금: {balance}\n\n"
-            body += "🔗 https://www.dhlottery.co.kr\n"
-            body += f"확인시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-            
-        else:
-            subject = "📋 로또 당첨 결과 (당첨 없음)"
-            body = f"지난주 로또 당첨 내역이 없습니다.\n\n"
-            body += f"💳 현재 예치금: {balance}\n\n"
-            body += "🔗 https://www.dhlottery.co.kr\n"
-            body += f"확인시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        
-        # 메일 발송
-        send_mail(subject, body)
         
         # 카톡 전송
         if wins:
@@ -251,7 +187,7 @@ def main():
         
     except Exception as e:
         log(f"에러 발생: {e}")
-        send_mail("[로또] 당첨 확인 에러", f"당첨 확인 중 오류가 발생했습니다.\n\n{e}")
+        send_kakao(f"❌ 로또 확인 에러: {e}", "김태완(메인)")
     
     finally:
         driver.quit()
