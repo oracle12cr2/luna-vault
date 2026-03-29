@@ -1,0 +1,6 @@
+charts_kr/
+*.csv
+.env
+__pycache__/
+*.pyc
+run.log
