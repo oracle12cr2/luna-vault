@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)  # 모든 도메인에서 접근 허용
 
 # Redis 연결
-redis_client = redis.Redis(host='192.168.50.9', port=6379, password='redis', decode_responses=True)
+redis_client = redis.Redis(host='192.168.50.3', port=6379, password='redis', decode_responses=True)
 
 @app.route('/health')
 def health():

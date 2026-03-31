@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 한국 주식 외부 Redis + Grafana 연동 실시간 시스템
-Redis 서버: 192.168.50.9
+Redis 서버: 192.168.50.3
 Grafana 모니터링 지원
 """
 
@@ -17,7 +17,7 @@ import json
 import argparse
 
 class ExternalRedisStockSystem:
-    def __init__(self, redis_host='192.168.50.9', redis_port=6379, redis_password=None):
+    def __init__(self, redis_host='192.168.50.3', redis_port=6379, redis_password='redis'):
         # TNS 설정
         os.environ['TNS_ADMIN'] = '/usr/lib/oracle/23/client64/lib/network/admin'
         
@@ -563,7 +563,7 @@ class ExternalRedisStockSystem:
 
 def main():
     parser = argparse.ArgumentParser(description='외부 Redis + Grafana 연동 주식 시스템')
-    parser.add_argument('--redis-host', default='192.168.50.9', help='Redis 서버 IP')
+    parser.add_argument('--redis-host', default='192.168.50.3', help='Redis 서버 IP')
     parser.add_argument('--redis-port', type=int, default=6379, help='Redis 포트')
     parser.add_argument('--redis-password', help='Redis 비밀번호')
     parser.add_argument('--interval', type=int, default=30, help='수집 간격(초)')

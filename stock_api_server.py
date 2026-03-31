@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 주식 실시간 대시보드 FastAPI 서버
-- Redis(192.168.50.9)에서 데이터 읽기
+- Redis(192.168.50.3)에서 데이터 읽기
 - /stocks, /health, /stock/{code} API
 - stock_realtime.html 서빙
 """
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-REDIS_HOST = "192.168.50.9"
+REDIS_HOST = "192.168.50.3"
 REDIS_PORT = 6379
 REDIS_PASSWORD = "redis"
 
