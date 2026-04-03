@@ -835,3 +835,143 @@
 💀 Dow Jones: 🔴 -1.73%
 📊 VIX: 31.0
 😰 F&G: 10.2/100 (extreme fear)
+2026-03-31 07:00:03,193 - INFO - ==================================================
+2026-03-31 07:00:03,193 - INFO - 🚀 미국 시장 분석 시작
+2026-03-31 07:00:03,194 - INFO - ==================================================
+2026-03-31 07:00:03,194 - INFO - 🚀 시장 데이터 수집 시작...
+2026-03-31 07:00:04,534 - INFO - ✅ S&P 500 (^GSPC): 6343.72 🔴 -0.39%
+2026-03-31 07:00:04,705 - INFO - ✅ NASDAQ (^IXIC): 20794.64 🔴 -0.73%
+2026-03-31 07:00:04,878 - INFO - ✅ Dow Jones (^DJI): 45216.14 🟢 +0.11%
+2026-03-31 07:00:05,194 - INFO - ✅ SOX 반도체 (^SOX): 7142.33 🔴 -4.23%
+2026-03-31 07:00:05,371 - INFO - ✅ Russell 2000 (^RUT): 2414.01 🔴 -1.46%
+2026-03-31 07:00:05,756 - INFO - ✅ 기술 (XLK): 127.50 🔴 -1.86%
+2026-03-31 07:00:05,976 - INFO - ✅ 금융 (XLF): 48.36 🟢 +1.15%
+2026-03-31 07:00:06,417 - INFO - ✅ 에너지 (XLE): 61.96 🔴 -0.96%
+2026-03-31 07:00:06,667 - INFO - ✅ 헬스케어 (XLV): 143.82 🟢 +0.39%
+2026-03-31 07:00:06,859 - INFO - ✅ 소비재(선택) (XLY): 105.66 🔴 -0.02%
+2026-03-31 07:00:07,083 - INFO - ✅ 소비재(필수) (XLP): 81.88 🟢 +0.12%
+2026-03-31 07:00:07,336 - INFO - ✅ 산업 (XLI): 156.61 🔴 -1.63%
+2026-03-31 07:00:07,553 - INFO - ✅ 소재 (XLB): 49.09 🟢 +0.37%
+2026-03-31 07:00:07,735 - INFO - ✅ 부동산 (XLRE): 40.21 🟢 +0.50%
+2026-03-31 07:00:07,979 - INFO - ✅ 유틸리티 (XLU): 45.92 🟢 +0.72%
+2026-03-31 07:00:08,146 - INFO - ✅ 통신 (XLC): 107.96 🟢 +0.86%
+2026-03-31 07:00:08,312 - INFO - ✅ 2년 국채 (^IRX): 3.60 🔴 -0.25%
+2026-03-31 07:00:08,470 - INFO - ✅ 10년 국채 (^TNX): 4.34 🔴 -2.21%
+2026-03-31 07:00:08,628 - INFO - ✅ 30년 국채 (^TYX): 4.90 🔴 -1.55%
+2026-03-31 07:00:08,800 - INFO - ✅ VIX (^VIX): 30.61 🔴 -1.42%
+2026-03-31 07:00:08,966 - INFO - ✅ USD/KRW (KRW=X): 1516.52 🟢 +0.63%
+2026-03-31 07:00:09,122 - WARNING - ❌ WTI 유가 (CL=F): 데이터 부족
+2026-03-31 07:00:09,281 - WARNING - ❌ 금 (GC=F): 데이터 부족
+2026-03-31 07:00:09,376 - INFO - ✅ Fear & Greed Index: 8.67060755336617 (extreme fear)
+2026-03-31 07:00:09,377 - INFO - ✅ 10Y-2Y 스프레드: 0.74bp
+2026-03-31 07:00:09,377 - INFO - ✅ 데이터 수집 완료
+2026-03-31 07:00:09,378 - INFO - ✅ 보고서 저장: /root/.openclaw/workspace/stock/reports/us_market_20260331.txt
+2026-03-31 07:00:09,458 - INFO - ✅ Oracle DB 연결 성공
+2026-03-31 07:00:09,464 - INFO - ✅ 테이블 생성/확인 완료
+2026-03-31 07:00:09,481 - INFO - ✅ DB 저장 완료: 21개 레코드
+2026-03-31 07:00:09,482 - INFO - ✅ DB 연결 종료
+2026-03-31 07:00:09,482 - INFO - ✅ 분석 완료!
+
+============================================================
+📊 미국 시장 분석 보고서
+============================================================
+# 🇺🇸 미국 증시 마감 분석 - 2026년 03월 31일
+
+보고서 생성: 2026-03-31 07:00:09
+
+## 📊 주요 지수
+🟠 **S&P 500**: $6343.72 🔴 -0.39%
+🔴 **NASDAQ**: $20794.64 🔴 -0.73%
+🟡 **Dow Jones**: $45216.14 🟢 +0.11%
+💀 **SOX 반도체**: $7142.33 🔴 -4.23%
+💀 **Russell 2000**: $2414.01 🔴 -1.46%
+
+## 🏭 섹터별 ETF
+💀 **기술**: $127.50 🔴 -1.86%
+🚀 **금융**: $48.36 🟢 +1.15%
+🔴 **에너지**: $61.96 🔴 -0.96%
+🟡 **헬스케어**: $143.82 🟢 +0.39%
+🟠 **소비재(선택)**: $105.66 🔴 -0.02%
+🟡 **소비재(필수)**: $81.88 🟢 +0.12%
+💀 **산업**: $156.61 🔴 -1.63%
+🟡 **소재**: $49.09 🟢 +0.37%
+🟡 **부동산**: $40.21 🟢 +0.50%
+🟢 **유틸리티**: $45.92 🟢 +0.72%
+🟢 **통신**: $107.96 🟢 +0.86%
+
+## 📈 채권 수익률
+🟠 **2년 국채**: $3.60 🔴 -0.25%
+💀 **10년 국채**: $4.34 🔴 -2.21%
+💀 **30년 국채**: $4.90 🔴 -1.55%
+🟢 **10Y-2Y 스프레드**: 0.74bp
+
+## 📋 기타 지표
+💀 **VIX**: $30.61 🔴 -1.42%
+🟢 **USD/KRW**: $1516.52 🟢 +0.63%
+
+## 😰 Fear & Greed Index
+🔴 **extreme fear**: 8.7/100
+
+## 📝 오늘의 시장 요약
+• 주요 지수는 **하락세**로 마감
+• VIX 30.6 - 변동성 **높음 (시장 불안)**
+• 투자 심리: **extreme fear**
+
+
+========================================
+💬 채팅용 요약
+========================================
+🇺🇸 미국 증시 마감 요약
+🟠 S&P 500: 🔴 -0.39%
+🔴 NASDAQ: 🔴 -0.73%
+🟡 Dow Jones: 🟢 +0.11%
+📊 VIX: 30.6
+😰 F&G: 8.7/100 (extreme fear)
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/stock/us_market_report.py", line 9, in <module>
+    import yfinance as yf
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/__init__.py", line 25, in <module>
+    from .ticker import Ticker
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/ticker.py", line 28, in <module>
+    from .base import TickerBase
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/base.py", line 38, in <module>
+    from .live import WebSocket
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/live.py", line 7, in <module>
+    from websockets.asyncio.client import connect as async_connect
+ModuleNotFoundError: No module named 'websockets.asyncio'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/stock/us_market_report.py", line 9, in <module>
+    import yfinance as yf
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/__init__.py", line 25, in <module>
+    from .ticker import Ticker
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/ticker.py", line 28, in <module>
+    from .base import TickerBase
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/base.py", line 38, in <module>
+    from .live import WebSocket
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/live.py", line 7, in <module>
+    from websockets.asyncio.client import connect as async_connect
+ModuleNotFoundError: No module named 'websockets.asyncio'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/stock/us_market_report.py", line 9, in <module>
+    import yfinance as yf
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/__init__.py", line 25, in <module>
+    from .ticker import Ticker
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/ticker.py", line 28, in <module>
+    from .base import TickerBase
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/base.py", line 38, in <module>
+    from .live import WebSocket
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/live.py", line 7, in <module>
+    from websockets.asyncio.client import connect as async_connect
+ModuleNotFoundError: No module named 'websockets.asyncio'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/stock/us_market_report.py", line 9, in <module>
+    import yfinance as yf
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/__init__.py", line 25, in <module>
+    from .ticker import Ticker
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/ticker.py", line 28, in <module>
+    from .base import TickerBase
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/base.py", line 38, in <module>
+    from .live import WebSocket
+  File "/home/anaconda3/lib/python3.12/site-packages/yfinance/live.py", line 7, in <module>
+    from websockets.asyncio.client import connect as async_connect
+ModuleNotFoundError: No module named 'websockets.asyncio'

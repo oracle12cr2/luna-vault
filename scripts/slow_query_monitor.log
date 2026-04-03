@@ -151,3 +151,15 @@ success
 /root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
 [2026-03-30 09:05:02] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
 success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: 줄 113: sendmail: 명령어를 찾을 수 없음
+[2026-03-31 09:05:07] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: line 113: sendmail: command not found
+[2026-04-01 09:05:03] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: line 113: sendmail: command not found
+[2026-04-02 09:05:03] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
+/root/.openclaw/workspace/scripts/slow_query_monitor.sh: line 113: sendmail: command not found
+[2026-04-03 09:05:22] 슬로우 쿼리 메일 발송 완료 (Top: 20건, Running: 0건) -> kto2004@naver.com
+success
