@@ -102,6 +102,11 @@
 - crontab/shebang: 모든 stock 스크립트 /home/anaconda3/bin/python3 절대경로로 수정
 - 교훈: cron 환경에서 #!/usr/bin/env python3은 PATH 문제로 실패 → 절대경로 필수
 
+## 업데이트 규칙
+- OpenClaw, Claude Code 등 버전업 시 **루나+유나 항상 같이** 올리기
+- 유나 Claude Code: `/opt/homebrew/bin` 경로 (brew node)
+- 루나 Claude Code: `~/.nvm/versions/node/v22.22.0/bin` 경로 (nvm)
+
 ## 유나 (Yuna) — 동생 AI 비서
 - 맥북 에어: 192.168.50.192, 계정 taeoankim
 - 플랜: Gamestop $65 Max 5x (별도 계정)

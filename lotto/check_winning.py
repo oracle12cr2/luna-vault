@@ -7,6 +7,8 @@
 import sys
 import time
 import smtplib
+import subprocess
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from selenium import webdriver
@@ -32,6 +34,24 @@ HISTORY_URL = "https://ol.dhlottery.co.kr/olotto/game/gameResult.do"
 
 def log(msg):
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
+
+def send_kakao(message, recipient="김태완"):
+    """카카오톡으로 메시지 전송 (유나 맥북 경유)"""
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        result = subprocess.run(
+            [os.path.join(script_dir, "send_kakao.sh"), recipient, message],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            log(f"카톡 전송 성공 → {recipient}")
+            return True
+        else:
+            log(f"카톡 전송 실패: {result.stderr}")
+            return False
+    except Exception as e:
+        log(f"카톡 전송 에러: {e}")
+        return False
 
 def send_mail(subject, body):
     """메일 발송"""
@@ -216,6 +236,17 @@ def main():
         
         # 메일 발송
         send_mail(subject, body)
+        
+        # 카톡 전송
+        if wins:
+            kakao_msg = f"🎉 로또 당첨! ({len(wins)}건)\n"
+            for w in wins:
+                kakao_msg += f"📍 {w['round']}회차: {w['result']} ({w['amount']})\n"
+            kakao_msg += f"💳 예치금: {balance}"
+        else:
+            kakao_msg = f"📋 로또 당첨 결과: 이번 주 당첨 없음\n💳 예치금: {balance}"
+        send_kakao(kakao_msg, "김태완(메인)")
+        
         log(f"당첨 확인 완료: {len(wins)}건")
         
     except Exception as e:

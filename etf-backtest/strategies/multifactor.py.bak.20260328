@@ -100,113 +100,6 @@ def score_supply_demand(investor_df: pd.DataFrame, days: int = 5) -> float:
     return np.clip(score, 0, 100)
 
 
-def score_macd(df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9) -> float:
-    """
-    MACD 팩터 스코어 (0~100)
-    - MACD선이 시그널선 위 = 강세, 아래 = 약세
-    - 골든크로스(상향돌파) = 최고점, 데드크로스(하향돌파) = 최저점
-    - MACD 히스토그램 증가 = 가산
-    """
-    if len(df) < slow + signal:
-        return 50.0  # 데이터 부족
-
-    close = df['close']
-    
-    # EMA 계산
-    ema_fast = close.ewm(span=fast, adjust=False).mean()
-    ema_slow = close.ewm(span=slow, adjust=False).mean()
-    macd_line = ema_fast - ema_slow
-    signal_line = macd_line.ewm(span=signal, adjust=False).mean()
-    histogram = macd_line - signal_line
-    
-    cur_macd = float(macd_line.iloc[-1])
-    cur_signal = float(signal_line.iloc[-1])
-    cur_hist = float(histogram.iloc[-1])
-    prev_hist = float(histogram.iloc[-2]) if len(histogram) > 1 else 0
-    
-    prev_macd = float(macd_line.iloc[-2]) if len(macd_line) > 1 else cur_macd
-    prev_signal_val = float(signal_line.iloc[-2]) if len(signal_line) > 1 else cur_signal
-    
-    score = 50.0
-    
-    # 골든크로스: MACD가 시그널 상향 돌파 → +30
-    if prev_macd <= prev_signal_val and cur_macd > cur_signal:
-        score += 30
-    # 데드크로스: MACD가 시그널 하향 돌파 → -30
-    elif prev_macd >= prev_signal_val and cur_macd < cur_signal:
-        score -= 30
-    # MACD > 시그널 (강세 유지) → +15
-    elif cur_macd > cur_signal:
-        score += 15
-    # MACD < 시그널 (약세 유지) → -15
-    else:
-        score -= 15
-    
-    # 히스토그램 증가 → +10 (모멘텀 강화)
-    if cur_hist > prev_hist and cur_hist > 0:
-        score += 10
-    # 히스토그램 감소 → -10 (모멘텀 약화)
-    elif cur_hist < prev_hist and cur_hist < 0:
-        score -= 10
-    
-    return np.clip(score, 0, 100)
-
-
-def score_fundamental(financial_df: pd.DataFrame = None) -> float:
-    """
-    펀더멘탈 팩터 스코어 (0~100)
-    - PER: 낮을수록 좋음 (저평가)
-    - ROE: 높을수록 좋음 (수익성)
-    - 매출성장률: 높을수록 좋음 (성장성)
-    
-    financial_df: columns = [per, roe, revenue_growth]
-    """
-    if financial_df is None or financial_df.empty:
-        return 50.0  # 데이터 없으면 중립
-    
-    score = 50.0
-    
-    # PER (0~35점) — 낮을수록 좋음
-    per = financial_df.get('per', None)
-    if per is not None and per > 0:
-        if per <= 10:
-            score += 20      # 저평가
-        elif per <= 15:
-            score += 10      # 적정
-        elif per <= 25:
-            score += 0       # 보통
-        elif per <= 40:
-            score -= 10      # 고평가
-        else:
-            score -= 15      # 과대평가
-    
-    # ROE (0~35점) — 높을수록 좋음
-    roe = financial_df.get('roe', None)
-    if roe is not None:
-        if roe >= 20:
-            score += 20      # 우수
-        elif roe >= 10:
-            score += 10      # 양호
-        elif roe >= 5:
-            score += 0       # 보통
-        else:
-            score -= 10      # 부진
-    
-    # 매출성장률 (0~30점) — 높을수록 좋음
-    growth = financial_df.get('revenue_growth', None)
-    if growth is not None:
-        if growth >= 20:
-            score += 15      # 고성장
-        elif growth >= 10:
-            score += 8       # 성장
-        elif growth >= 0:
-            score += 0       # 정체
-        else:
-            score -= 10      # 역성장
-    
-    return np.clip(score, 0, 100)
-
-
 def score_momentum(df: pd.DataFrame, periods: list = None) -> float:
     """
     모멘텀 팩터 스코어 (0~100)
@@ -233,44 +126,39 @@ def score_momentum(df: pd.DataFrame, periods: list = None) -> float:
 def multifactor_score(
     price_df: pd.DataFrame,
     investor_df: pd.DataFrame = None,
-    financial_df: pd.DataFrame = None,
     weights: dict = None,
     params: dict = None,
 ) -> dict:
     """
-    멀티팩터 통합 스코어 계산 (6팩터)
+    멀티팩터 통합 스코어 계산
 
     Args:
         price_df: OHLCV DataFrame (columns: date, open, high, low, close, volume)
         investor_df: 투자자별 매매동향 (columns: trade_dt, frgn_net_vol, orgn_net_vol, prsn_net_vol)
-        financial_df: 펀더멘탈 지표 dict (per, roe, revenue_growth) — optional
-        weights: 팩터 가중치
+        weights: 팩터 가중치 {'technical': 0.4, 'supply': 0.4, 'momentum': 0.2}
         params: 기술적 분석 파라미터
 
     Returns:
-        dict with total_score, individual scores, signal, confidence
+        dict: {
+            'total_score': float,      # 통합 스코어 (0~100)
+            'technical_score': float,   # 기술적 팩터
+            'supply_score': float,      # 수급 팩터
+            'momentum_score': float,    # 모멘텀 팩터
+            'signal': str,             # 'BUY', 'HOLD', 'SELL'
+            'confidence': str,         # 'HIGH', 'MEDIUM', 'LOW'
+        }
     """
     if weights is None:
-        weights = {
-            'technical': 0.30,   # MA/RSI/BB (기존 0.4 → 0.3)
-            'macd': 0.10,        # MACD (신규)
-            'supply': 0.30,      # 수급 (기존 0.4 → 0.3)
-            'momentum': 0.15,    # 모멘텀 (기존 0.2 → 0.15)
-            'fundamental': 0.15, # 펀더멘탈 (신규)
-        }
+        weights = {'technical': 0.4, 'supply': 0.4, 'momentum': 0.2}
 
     tech_score = score_technical(price_df, params)
-    macd_score = score_macd(price_df)
     supply_score = score_supply_demand(investor_df)
     momentum_score = score_momentum(price_df)
-    fundamental_score_val = score_fundamental(financial_df)
 
     total = (
         tech_score * weights['technical'] +
-        macd_score * weights['macd'] +
         supply_score * weights['supply'] +
-        momentum_score * weights['momentum'] +
-        fundamental_score_val * weights['fundamental']
+        momentum_score * weights['momentum']
     )
 
     # 신호 판정
@@ -292,10 +180,8 @@ def multifactor_score(
     return {
         'total_score': round(total, 1),
         'technical_score': round(tech_score, 1),
-        'macd_score': round(macd_score, 1),
         'supply_score': round(supply_score, 1),
         'momentum_score': round(momentum_score, 1),
-        'fundamental_score': round(fundamental_score_val, 1),
         'signal': signal,
         'confidence': confidence,
     }

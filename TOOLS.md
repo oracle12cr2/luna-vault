@@ -29,16 +29,19 @@ Things like:
 - Base URL: https://openapivts.koreainvestment.com:29443
 - 발급일: 2026-03-11
 
-### Windows PC
+### Windows PC (AI 서버)
 - 호스트명: 1260P (windows)
 - IP: 192.168.50.226
 - SSH: kto@192.168.50.226 (ed25519 키 인증)
 - 접속: `ssh -i ~/.ssh/id_ed25519 kto@192.168.50.226`
 - 유저: kto (관리자)
-- 용도: 리니지M(Purple) 24시간 가동, Claude 데스크톱, Chrome
-- 리니지M 리소스 제한: BelowNormal + CPU 4코어(0-3), 로그온 시 자동 적용
-- 프로세스 모니터링: C:\Scripts\check_lineagem.ps1 (Purple+LineageM 종료 시 네이버 메일 알림)
+- GPU: GeForce RTX 3060 Ti (VRAM 8GB)
+- 용도: AI 전용 (Claude 데스크톱, Chrome, 로컬 LLM 등)
 - 네이버 SMTP: kto2004@naver.com / YM512KB4JEB8
+
+### 리니지M 노트북 (별도)
+- 리니지M(Purple) 24시간 가동
+- 프로세스 모니터링: C:\Scripts\check_lineagem.ps1 (Purple+LineageM 종료 시 네이버 메일 알림)
 
 <<<<<<< Updated upstream
 =======
