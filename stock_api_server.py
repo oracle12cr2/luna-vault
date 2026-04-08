@@ -7,14 +7,17 @@
 """
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import redis
 import json
+import requests
 from datetime import datetime
 from pathlib import Path
 
 app = FastAPI(title="주식 실시간 대시보드")
+
+DAY_TRADING_API_BASE = "http://127.0.0.1:3210/api/day-trading"
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,6 +60,13 @@ def get_latest_data(r, stock_code: str) -> dict | None:
     if not raw:
         return None
     return json.loads(raw)
+
+
+def proxy_day_trading(path: str):
+    url = f"{DAY_TRADING_API_BASE}/{path.lstrip('/')}"
+    resp = requests.get(url, timeout=10)
+    resp.raise_for_status()
+    return resp.json()
 
 
 @app.get("/health")
@@ -142,6 +152,38 @@ def alerts():
         return {"alerts": result, "count": len(result)}
     except Exception as e:
         return {"alerts": [], "error": str(e)}
+
+
+@app.get("/api/day-trading/dashboard")
+def day_trading_dashboard():
+    try:
+        return proxy_day_trading("dashboard")
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/api/day-trading/daily/{date}")
+def day_trading_daily(date: str):
+    try:
+        return proxy_day_trading(f"daily/{date}")
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/api/day-trading/symbol/{code}")
+def day_trading_symbol(code: str):
+    try:
+        return proxy_day_trading(f"symbol/{code}")
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/day-trading", response_class=HTMLResponse)
+def day_trading_index():
+    html_path = Path(__file__).parent / "day_trading.html"
+    if html_path.exists():
+        return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+    return HTMLResponse(content="<h1>day_trading.html not found</h1>", status_code=404)
 
 
 @app.get("/stock_realtime.html", response_class=HTMLResponse)
