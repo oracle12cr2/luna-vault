@@ -186,6 +186,14 @@ def day_trading_index():
     return HTMLResponse(content="<h1>day_trading.html not found</h1>", status_code=404)
 
 
+@app.get("/day-trading/symbol", response_class=HTMLResponse)
+def day_trading_symbol_page():
+    html_path = Path(__file__).parent / "day_trading_symbol.html"
+    if html_path.exists():
+        return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+    return HTMLResponse(content="<h1>day_trading_symbol.html not found</h1>", status_code=404)
+
+
 @app.get("/stock_realtime.html", response_class=HTMLResponse)
 @app.get("/", response_class=HTMLResponse)
 def index():
